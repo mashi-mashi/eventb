@@ -1,7 +1,5 @@
 import { EventType } from '../core/event';
 
-type PostEvent = PostCreatedEvent | PostUpdatedEvent | PostPublishedEvent;
-
 type PostCreatedEvent = {
   type: 'PostCreatedEvent';
   payload: {
@@ -22,4 +20,6 @@ type PostPublishedEvent = {
   type: 'PostPublishedEvent';
 } & EventType;
 
-export { PostEvent, PostCreatedEvent, PostUpdatedEvent, PostPublishedEvent };
+type PostEvent = PostCreatedEvent | PostUpdatedEvent | PostPublishedEvent;
+
+export { PostEvent };

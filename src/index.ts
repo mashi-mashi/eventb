@@ -1,27 +1,43 @@
 import { Post } from './model/post';
-import { createPost } from './repository/post_repository';
+import { PostSerializer, createPost } from './repository/post_repository';
 
 (() => {
-  const postSerializer = (post: Post) => ({
-    serialize() {
-      return {
-        id: post.id,
-      };
-    },
-    serializeEvents() {
-      return post.events.map((event) => {
+  const postSerializer = (post: Post) =>
+    ({
+      serialize() {
         return {
-          type: event.type,
+          id: post.id,
+          __type: 'serializable',
         };
-      });
-    },
-  });
+      },
+      serializeEvents() {
+        return post.events.map((event) => {
+          return JSON.parse(JSON.stringify(event));
+        });
+      },
+      __value: post,
+    } as PostSerializer);
   createPost(
     {
-      store: (any: unknown) => {
+      store: (any) => {
         console.log('stored!', any);
       },
     },
-    postSerializer(Post.create({ title: 'title', content: 'content' })),
+    postSerializer(
+      Post.create({ title: 'title', content: 'content' })
+        .update({
+          title: 'new title1',
+        })
+        .update({
+          title: 'new title2',
+        })
+        .update({
+          title: 'new title3',
+        })
+        .update({
+          title: 'new title4',
+        })
+        .publish(),
+    ),
   );
 })();

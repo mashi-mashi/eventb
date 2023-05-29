@@ -11,6 +11,8 @@ describe('Post', () => {
     });
     expect(post.title).toBe('title');
     expect(post.content).toBe('content');
+    expect(post.events.length).toBe(1);
+    expect(post.lastEvent.type).toBe('PostCreatedEvent');
   });
 
   test('イベントを介してUpdateできる', () => {
@@ -21,13 +23,15 @@ describe('Post', () => {
         content: 'content',
       },
     }).applyEvent({
-      type: 'PostUpdatedvent',
+      type: 'PostUpdatedEvent',
       payload: {
         title: 'new title',
       },
     });
     expect(post.title).toBe('new title');
     expect(post.content).toBe('content');
+    expect(post.events.length).toBe(2);
+    expect(post.lastEvent.type).toBe('PostUpdatedEvent');
   });
 
   test('イベントを介してPublishできる', () => {
@@ -39,7 +43,7 @@ describe('Post', () => {
       },
     })
       .applyEvent({
-        type: 'PostUpdatedvent',
+        type: 'PostUpdatedEvent',
         payload: {
           title: 'new title',
         },
@@ -50,5 +54,7 @@ describe('Post', () => {
     expect(post.title).toBe('new title');
     expect(post.content).toBe('content');
     expect(post.publishedDate).toBeDefined();
+    expect(post.events.length).toBe(3);
+    expect(post.lastEvent.type).toBe('PostPublishedEvent');
   });
 });

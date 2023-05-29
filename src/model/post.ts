@@ -13,7 +13,7 @@ type PostCreatedEvent = {
 } & Event;
 
 type PostUpdatedEvent = {
-  type: 'PostUpdatedvent';
+  type: 'PostUpdatedEvent';
   payload: {
     title?: string;
     content?: string;
@@ -28,13 +28,25 @@ class Post implements EventSourcedEntity<Post> {
   public readonly id: string;
   public readonly publishedDate?: Date;
 
-  private constructor(public readonly title: string, public readonly content: string, publishedDate?: Date) {
+  public readonly events: PostEvent[] = [];
+
+  get lastEvent(): PostEvent {
+    return this.events[this.events.length - 1];
+  }
+
+  private constructor(
+    public readonly title: string,
+    public readonly content: string,
+    publishedDate?: Date,
+    events?: PostEvent[],
+  ) {
     this.id = generateId();
     this.publishedDate = publishedDate;
+    this.events = events ?? [];
   }
 
   private copyWith(post: Partial<Post>): Post {
-    return new Post(post.title || this.title, post.content || this.content, post.publishedDate);
+    return new Post(post.title || this.title, post.content || this.content, post.publishedDate, post.events);
   }
 
   static create(event: PostCreatedEvent): Post {
@@ -51,17 +63,19 @@ class Post implements EventSourcedEntity<Post> {
           return this.copyWith({
             title: createdEvent.payload.title,
             content: createdEvent.payload.content,
+            events: [...this.events, createdEvent],
           });
         },
       )
       .with(
         {
-          type: 'PostUpdatedvent',
+          type: 'PostUpdatedEvent',
         },
         (updatedEvent) => {
           return this.copyWith({
             title: updatedEvent.payload.title,
             content: updatedEvent.payload.content,
+            events: [...this.events, updatedEvent],
           });
         },
       )
@@ -72,6 +86,7 @@ class Post implements EventSourcedEntity<Post> {
         () => {
           return this.copyWith({
             publishedDate: new Date(),
+            events: [...this.events, event],
           });
         },
       )

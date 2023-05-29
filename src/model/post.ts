@@ -1,6 +1,6 @@
 import { match } from 'ts-pattern';
-import { Event, EventSourcedEntity } from './event';
-import { generateId } from './uuid';
+import { Event, EventSourcedEntity } from '../core/event';
+import { generateId } from '../lib/uuid';
 
 type PostEvent = PostCreatedEvent | PostUpdatedEvent | PostPublishedEvent;
 

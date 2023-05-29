@@ -16,9 +16,12 @@ import { PostSerializer, createPost } from './repository/post_repository';
         });
       },
       __value: post,
+      clearEvents() {
+        return post.clearEvents();
+      },
     } as PostSerializer);
 
-  createPost(
+  const s = createPost(
     {
       store: (any) => {
         console.log('stored!', any);
@@ -41,4 +44,6 @@ import { PostSerializer, createPost } from './repository/post_repository';
         .publish(),
     ),
   );
+
+  console.log('stored', s);
 })();

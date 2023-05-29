@@ -14,6 +14,12 @@ class Post implements EventSourcedEntity<Post> {
     return this.events[this.events.length - 1];
   }
 
+  clearEvents(): Post {
+    return this.copyWith({
+      events: [],
+    });
+  }
+
   private constructor(
     public readonly title: string,
     public readonly content: string,

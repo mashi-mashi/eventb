@@ -13,4 +13,6 @@ export function createPost(db: DataBaseType, post: PostSerializer) {
   post.serializeEvents().forEach((event) => {
     db.store(event);
   });
+
+  return post.clearEvents();
 }

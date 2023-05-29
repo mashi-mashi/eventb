@@ -1,4 +1,5 @@
 import { match } from 'ts-pattern';
+import { Event, EventSourcedEntity } from './event';
 import { generateId } from './uuid';
 
 type PostEvent = PostCreatedEvent | PostUpdatedEvent | PostPublishedEvent;
@@ -9,7 +10,7 @@ type PostCreatedEvent = {
     title: string;
     content: string;
   };
-};
+} & Event;
 
 type PostUpdatedEvent = {
   type: 'PostUpdatedvent';
@@ -17,13 +18,13 @@ type PostUpdatedEvent = {
     title?: string;
     content?: string;
   };
-};
+} & Event;
 
 type PostPublishedEvent = {
   type: 'PostPublishedEvent';
-};
+} & Event;
 
-class Post {
+class Post implements EventSourcedEntity<Post> {
   public readonly id: string;
   public readonly publishedDate?: Date;
 
@@ -32,7 +33,7 @@ class Post {
     this.publishedDate = publishedDate;
   }
 
-  private copyWith(post: Partial<Post>) {
+  private copyWith(post: Partial<Post>): Post {
     return new Post(post.title || this.title, post.content || this.content, post.publishedDate);
   }
 

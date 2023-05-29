@@ -36,14 +36,15 @@ class Post {
     return new Post(post.title || this.title, post.content || this.content);
   }
 
+  static create(event: PostCreatedEvent): Post {
+    return new Post(event.payload.title, event.payload.content).applyEvent(event);
+  }
+
   applyEvent(event: PostEvent): Post {
     switch (event.type) {
       case 'PostCreatedEvent': {
-        const createdEvent = { ...event } as PostCreatedEvent;
-        return this.copyWith({
-          title: createdEvent.payload.title,
-          content: createdEvent.payload.content,
-        });
+        const createdEvent = event as PostCreatedEvent;
+        return new Post(createdEvent.payload.title, createdEvent.payload.content);
       }
       case 'PostUpdatedvent': {
         const updatedEvent = event as PostUpdatedEvent;

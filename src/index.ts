@@ -1,3 +1,4 @@
+import { JsonType } from './core/serializable';
 import { Post } from './model/post';
 import { PostSerializer, createPost } from './repository/post_repository';
 
@@ -7,8 +8,7 @@ import { PostSerializer, createPost } from './repository/post_repository';
       serialize() {
         return {
           id: post.id,
-          __type: 'serializable',
-        };
+        } as JsonType<Post>;
       },
       serializeEvents() {
         return post.events.map((event) => {
@@ -17,6 +17,7 @@ import { PostSerializer, createPost } from './repository/post_repository';
       },
       __value: post,
     } as PostSerializer);
+
   createPost(
     {
       store: (any) => {

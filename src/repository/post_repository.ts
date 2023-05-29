@@ -1,14 +1,14 @@
 import { JsonType, Serializable } from '../core/serializable';
 import { Post } from '../model/post';
+import { PostEvent } from '../model/post_event';
 
 type DataBaseType = {
-  store: (any: JsonType) => void;
+  store: <T>(any: JsonType<T>) => void;
 };
 
-export type PostSerializer = Serializable<Post>;
+export type PostSerializer = Serializable<Post, PostEvent>;
 
 export function createPost(db: DataBaseType, post: PostSerializer) {
-  post.serialize();
   db.store(post.serialize());
   post.serializeEvents().forEach((event) => {
     db.store(event);

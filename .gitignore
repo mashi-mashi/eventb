@@ -1,0 +1,33 @@
+# Ignore build and output directories
+build/
+dist/
+output/
+
+# Ignore specific files
+config.js
+vendor.js
+
+# Ignore files with specific extensions
+*.config.js
+*.md
+
+# Ignore all files in a directory
+logs/
+
+# Ignore all files in a nested directory
+src/temp/**
+
+# Ignore all files in a specific directory but include a specific file
+src/temp/*
+!src/temp/special-file.js
+
+# Ignore files with a specific name pattern in any directory
+**/backup-*.zip
+
+# Ignore files in the root directory
+/*.log
+
+# Ignore a specific file in the root directory
+/important.txt
+
+/node_modules

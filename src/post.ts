@@ -1,3 +1,4 @@
+import { match } from 'ts-pattern';
 import { generateId } from './uuid';
 
 type PostEvent = PostCreatedEvent | PostUpdatedEvent | PostPublishedEvent;
@@ -40,24 +41,40 @@ class Post {
   }
 
   applyEvent(event: PostEvent): Post {
-    switch (event.type) {
-      case 'PostCreatedEvent': {
-        const createdEvent = event as PostCreatedEvent;
-        return new Post(createdEvent.payload.title, createdEvent.payload.content);
-      }
-      case 'PostUpdatedvent': {
-        const updatedEvent = event as PostUpdatedEvent;
-        return this.copyWith({
-          title: updatedEvent.payload.title,
-          content: updatedEvent.payload.content,
-        });
-      }
-      case 'PostPublishedEvent': {
-        return this.copyWith({
-          publishedDate: new Date(),
-        });
-      }
-    }
+    return match(event)
+      .with(
+        {
+          type: 'PostCreatedEvent',
+        },
+        (createdEvent) => {
+          return this.copyWith({
+            title: createdEvent.payload.title,
+            content: createdEvent.payload.content,
+          });
+        },
+      )
+      .with(
+        {
+          type: 'PostUpdatedvent',
+        },
+        (updatedEvent) => {
+          return this.copyWith({
+            title: updatedEvent.payload.title,
+            content: updatedEvent.payload.content,
+          });
+        },
+      )
+      .with(
+        {
+          type: 'PostPublishedEvent',
+        },
+        () => {
+          return this.copyWith({
+            publishedDate: new Date(),
+          });
+        },
+      )
+      .exhaustive();
   }
 }
 

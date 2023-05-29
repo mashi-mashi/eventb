@@ -1,7 +1,7 @@
 import { Post } from './post';
 
 describe('Post', () => {
-  test('should create a post', () => {
+  test('初期化できる', () => {
     const post = Post.create({
       type: 'PostCreatedEvent',
       payload: {

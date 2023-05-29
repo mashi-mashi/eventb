@@ -20,20 +20,19 @@ type PostUpdatedEvent = {
 
 type PostPublishedEvent = {
   type: 'PostPublishedEvent';
-  payload: {
-    postId: string;
-  };
 };
 
 class Post {
   public readonly id: string;
+  public readonly publishedDate?: Date;
 
-  private constructor(public readonly title: string, public readonly content: string) {
+  private constructor(public readonly title: string, public readonly content: string, publishedDate?: Date) {
     this.id = generateId();
+    this.publishedDate = publishedDate;
   }
 
   private copyWith(post: Partial<Post>) {
-    return new Post(post.title || this.title, post.content || this.content);
+    return new Post(post.title || this.title, post.content || this.content, post.publishedDate);
   }
 
   static create(event: PostCreatedEvent): Post {
@@ -54,7 +53,9 @@ class Post {
         });
       }
       case 'PostPublishedEvent': {
-        return this.copyWith({});
+        return this.copyWith({
+          publishedDate: new Date(),
+        });
       }
     }
   }

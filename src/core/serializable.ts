@@ -1,10 +1,8 @@
-type JsonType<T> = object & {
-  __type: T;
-};
+type JsonType = object;
 
-type Serializable<T> = {
-  serialize(): JsonType<T>;
-  serializeEvents(): JsonType<T>[];
+type Serializable = {
+  serialize(): JsonType;
+  serializeEvents(): JsonType[];
 };
 
 export { Serializable, JsonType };

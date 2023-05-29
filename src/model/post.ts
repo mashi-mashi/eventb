@@ -1,6 +1,7 @@
 import { match } from 'ts-pattern';
 import { Event, EventSourcedEntity } from '../core/event';
 import { generateId } from '../lib/uuid';
+import { NestedPartial } from '../lib/type';
 
 type PostEvent = PostCreatedEvent | PostUpdatedEvent | PostPublishedEvent;
 
@@ -45,8 +46,12 @@ class Post implements EventSourcedEntity<Post> {
     this.events = events ?? [];
   }
 
-  private copyWith(post: Partial<Post>): Post {
-    return new Post(post.title || this.title, post.content || this.content, post.publishedDate, post.events);
+  private copyWith(
+    post: NestedPartial<Post> & {
+      events: PostEvent[]; /// イベントだけは型セーフ
+    },
+  ): Post {
+    return new Post(post.title || this.title, post.content || this.content, post.publishedDate, post?.events);
   }
 
   static create(event: PostCreatedEvent): Post {

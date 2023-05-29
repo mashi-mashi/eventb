@@ -1,7 +1,7 @@
 import { match } from 'ts-pattern';
 import { EventSourcedEntity } from '../core/event';
 import { NestedPartial } from '../lib/type';
-import { generateId } from '../lib/uuid';
+import { generateId } from '../lib/generateId';
 import { PostEvent } from './post_event';
 
 class Post implements EventSourcedEntity<Post> {

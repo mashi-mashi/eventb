@@ -2,7 +2,7 @@ import { match } from 'ts-pattern';
 import { EventSourcedEntity } from '../core/event';
 import { NestedPartial } from '../lib/type';
 import { generateId } from '../lib/uuid';
-import { PostCreatedEvent, PostEvent } from './post_event';
+import { PostEvent } from './post_event';
 
 class Post implements EventSourcedEntity<Post> {
   public readonly id: string;
@@ -33,8 +33,14 @@ class Post implements EventSourcedEntity<Post> {
     return new Post(post.title || this.title, post.content || this.content, post.publishedDate, post?.events);
   }
 
-  static create(event: PostCreatedEvent): Post {
-    return new Post(event.payload.title, event.payload.content).applyEvent(event);
+  static create({ title, content }: { title: string; content: string }): Post {
+    return new Post('', '').applyEvent({
+      type: 'PostCreatedEvent',
+      payload: {
+        title,
+        content,
+      },
+    });
   }
 
   public update({ title, content }: { title?: string; content?: string }) {

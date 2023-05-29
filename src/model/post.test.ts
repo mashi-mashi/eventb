@@ -3,13 +3,7 @@ import { Post } from './post';
 describe('Post', () => {
   describe('イベントの実行', () => {
     test('初期化できる', () => {
-      const post = Post.create({
-        type: 'PostCreatedEvent',
-        payload: {
-          title: 'title',
-          content: 'content',
-        },
-      });
+      const post = Post.create({ title: 'title', content: 'content' });
       expect(post.title).toBe('title');
       expect(post.content).toBe('content');
       expect(post.events.length).toBe(1);
@@ -17,13 +11,7 @@ describe('Post', () => {
     });
 
     test('イベントを介してUpdateできる', () => {
-      const post = Post.create({
-        type: 'PostCreatedEvent',
-        payload: {
-          title: 'title',
-          content: 'content',
-        },
-      }).applyEvent({
+      const post = Post.create({ title: 'title', content: 'content' }).applyEvent({
         type: 'PostUpdatedEvent',
         payload: {
           title: 'new title',
@@ -36,13 +24,7 @@ describe('Post', () => {
     });
 
     test('イベントを介してPublishできる', () => {
-      const post = Post.create({
-        type: 'PostCreatedEvent',
-        payload: {
-          title: 'title',
-          content: 'content',
-        },
-      })
+      const post = Post.create({ title: 'title', content: 'content' })
         .applyEvent({
           type: 'PostUpdatedEvent',
           payload: {
@@ -62,13 +44,7 @@ describe('Post', () => {
 
   describe('操作', () => {
     test('updateイベントが発火する', () => {
-      const post = Post.create({
-        type: 'PostCreatedEvent',
-        payload: {
-          title: 'title',
-          content: 'content',
-        },
-      }).update({
+      const post = Post.create({ title: 'title', content: 'content' }).update({
         title: 'new title',
       });
 
@@ -80,13 +56,7 @@ describe('Post', () => {
   });
 
   test('publishイベントが発火する', () => {
-    const post = Post.create({
-      type: 'PostCreatedEvent',
-      payload: {
-        title: 'title',
-        content: 'content',
-      },
-    }).publish();
+    const post = Post.create({ title: 'title', content: 'content' }).publish();
 
     expect(post.title).toBe('title');
     expect(post.content).toBe('content');

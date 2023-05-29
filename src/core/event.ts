@@ -1,9 +1,9 @@
-type Event = {
+type EventType = {
   type: string;
 };
 
 type EventSourcedEntity<T> = {
-  applyEvent(event: Event): T;
+  applyEvent(event: EventType): T;
 };
 
-export { Event, EventSourcedEntity };
+export { EventType, EventSourcedEntity };

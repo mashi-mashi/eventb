@@ -2,12 +2,15 @@ import { JsonType } from './core/serializable';
 import { Post, PublishedPost } from './model/post';
 import { PostSerializer, createPost } from './repository/post_repository';
 
-(() => {
+(async () => {
   const postSerializer = (post: Post | PublishedPost) =>
     ({
       serialize() {
         return {
           id: post.id,
+          title: post.title,
+          content: post.content,
+          publishedDate: post.publishedDate,
         } as JsonType<Post>;
       },
       serializeEvents() {
@@ -20,7 +23,7 @@ import { PostSerializer, createPost } from './repository/post_repository';
       },
     } as PostSerializer);
 
-  const s = createPost(
+  const s = await createPost(
     {
       store: async (any) => {
         console.log('stored!', any);
@@ -44,5 +47,5 @@ import { PostSerializer, createPost } from './repository/post_repository';
     ),
   );
 
-  console.log('stored', s);
+  console.log('RESULT!!!!!!!!', s);
 })();

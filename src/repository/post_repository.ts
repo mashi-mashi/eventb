@@ -8,10 +8,8 @@ type DataBaseType = {
 export type PostSerializer = Serializable<Post | PublishedPost, Event>;
 
 export async function createPost(db: DataBaseType, post: PostSerializer) {
-  db.store(post.serialize());
-  post.serializeEvents().forEach((event) => {
-    db.store(event);
-  });
+  await db.store(post.serialize());
+  await Promise.all(post.serializeEvents().map(db.store));
 
   return post.callback();
 }

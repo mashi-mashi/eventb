@@ -113,5 +113,18 @@ describe('Post', () => {
       expect(published.events.length).toBe(3);
       expect(published instanceof PublishedPost).toBeTruthy();
     });
+
+    test('unpublishメソッドを介して、Postクラスに交換できる', () => {
+      const unpublished = Post.create({ title: 'title', content: 'content' })
+        .update({ title: 'new title' })
+        .publish()
+        .unpublish();
+
+      expect(unpublished.title).toBe('new title');
+      expect(unpublished.content).toBe('content');
+      expect(unpublished.publishedDate).toBeUndefined();
+      expect(unpublished.events.length).toBe(4);
+      expect(unpublished instanceof Post).toBeTruthy();
+    });
   });
 });

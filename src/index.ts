@@ -1,3 +1,4 @@
+import { match, P } from 'ts-pattern';
 import { JsonType } from './core/serializable';
 import { Post, PublishedPost } from './model/post';
 import { PostSerializer, createPost } from './repository/post_repository';
@@ -47,5 +48,12 @@ import { PostSerializer, createPost } from './repository/post_repository';
     ),
   );
 
-  console.log('RESULT!!!!!!!!', s);
+  match(s)
+    .with({ kind: 'Post' }, (post) => {
+      console.log('post', post);
+    })
+    .with({ kind: 'PublishedPost' }, (publishedPost) => {
+      console.log('PublishedPost!!!!!!!', publishedPost);
+    })
+    .exhaustive();
 })();

@@ -8,6 +8,8 @@ class Post implements EventSourcedEntity<PostEvent, Post> {
   public readonly id: IdType;
   public readonly publishedDate?: Date;
 
+  readonly kind = 'Post';
+
   public readonly events: PostEvent[] = [];
 
   get lastEvent(): PostEvent {
@@ -107,6 +109,8 @@ class Post implements EventSourcedEntity<PostEvent, Post> {
 }
 
 class PublishedPost implements EventSourcedEntity<PublishedPostEvent, PublishedPost> {
+  readonly kind = 'PublishedPost';
+
   private constructor(
     public readonly id: IdType,
     public readonly title: string,

@@ -3,6 +3,7 @@ type EventType = {
 };
 
 type EventSourcedEntity<E extends EventType, T> = {
+  readonly kind: string;
   readonly events: E[];
   readonly lastEvent: E;
 

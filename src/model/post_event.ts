@@ -20,6 +20,12 @@ type PostPublishedEvent = {
   type: 'PostPublishedEvent';
 } & EventType;
 
-type PostEvent = PostCreatedEvent | PostUpdatedEvent | PostPublishedEvent;
+type PostEvent = PostCreatedEvent | PostUpdatedEvent | PostPublishedEvent | PostUnPublishedEvent;
 
-export { PostEvent };
+type PostUnPublishedEvent = {
+  type: 'PostUnPublishedEvent';
+} & EventType;
+
+type PublishedPostEvent = PostEvent;
+
+export { PostEvent, PublishedPostEvent };

@@ -1,11 +1,11 @@
 import { match } from 'ts-pattern';
-import { EventSourcedEntity, EventType } from '../core/event';
+import { EventSourcedEntity } from '../core/event';
+import { IdType, generateId } from '../lib/generateId';
 import { NestedPartial } from '../lib/type';
-import { generateId } from '../lib/generateId';
-import { PostEvent } from './post_event';
+import { PostEvent, PublishedPostEvent } from './post_event';
 
 class Post implements EventSourcedEntity<PostEvent, Post> {
-  public readonly id: string;
+  public readonly id: IdType;
   public readonly publishedDate?: Date;
 
   public readonly events: PostEvent[] = [];
@@ -49,6 +49,10 @@ class Post implements EventSourcedEntity<PostEvent, Post> {
     });
   }
 
+  static fromPublishedPost(publishedPost: PublishedPost): Post {
+    return new Post(publishedPost.title, publishedPost.content, publishedPost.publishedDate, publishedPost.events);
+  }
+
   public update({ title, content }: { title?: string; content?: string }) {
     return this.applyEvent({
       type: 'PostUpdatedEvent',
@@ -89,47 +93,27 @@ class Post implements EventSourcedEntity<PostEvent, Post> {
           events: [...this.events, event],
         });
       })
+      .with({ type: 'PostUnPublishedEvent' }, () => {
+        return this.copyWith({
+          publishedDate: undefined,
+          events: [...this.events, event],
+        });
+      })
       .exhaustive();
   }
 }
 
-class PublishedPost implements EventSourcedEntity<EventType, PublishedPost> {
+class PublishedPost implements EventSourcedEntity<PublishedPostEvent, PublishedPost> {
   private constructor(
-    public readonly id: string,
+    public readonly id: IdType,
     public readonly title: string,
     public readonly content: string,
     public readonly publishedDate: Date,
-    public readonly events: EventType[],
+    public readonly events: PublishedPostEvent[],
   ) {}
 
-  get lastEvent(): EventType {
+  get lastEvent(): PublishedPostEvent {
     return this.events[this.events.length - 1];
-  }
-
-  applyEvent(event: EventType): PublishedPost {
-    return match(event).otherwise(() => this);
-  }
-
-  private copyWith(
-    post: NestedPartial<PublishedPost> & {
-      publishedDate: Date;
-      events: Event[];
-    },
-  ): PublishedPost {
-    return new PublishedPost(
-      post.id ?? this.id,
-      post.title ?? this.title,
-      post.content ?? this.content,
-      post.publishedDate ?? this.publishedDate,
-      post.events ?? this.events,
-    );
-  }
-
-  clearEvents(): PublishedPost {
-    return this.copyWith({
-      publishedDate: this.publishedDate,
-      events: [],
-    });
   }
 
   static fromPost(post: Post): PublishedPost {
@@ -138,6 +122,21 @@ class PublishedPost implements EventSourcedEntity<EventType, PublishedPost> {
     }
 
     return new PublishedPost(post.id, post.title, post.content, post.publishedDate, post.events);
+  }
+
+  public unpublish(): Post {
+    return Post.fromPublishedPost(this).applyEvent({
+      type: 'PostUnPublishedEvent',
+    });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  applyEvent(_: PostEvent): PublishedPost {
+    throw new Error('Method not implemented.');
+  }
+
+  clearEvents(): PublishedPost {
+    throw new Error('Method not implemented.');
   }
 }
 

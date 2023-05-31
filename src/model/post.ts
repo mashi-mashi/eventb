@@ -4,7 +4,7 @@ import { NestedPartial } from '../lib/type';
 import { generateId } from '../lib/generateId';
 import { PostEvent } from './post_event';
 
-class Post implements EventSourcedEntity<Post> {
+class Post implements EventSourcedEntity<PostEvent, Post> {
   public readonly id: string;
   public readonly publishedDate?: Date;
 

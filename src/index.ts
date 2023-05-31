@@ -22,7 +22,7 @@ import { PostSerializer, createPost } from './repository/post_repository';
 
   const s = createPost(
     {
-      store: (any) => {
+      store: async (any) => {
         console.log('stored!', any);
       },
     },

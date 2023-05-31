@@ -1,9 +1,9 @@
 import { JsonType } from './core/serializable';
-import { Post } from './model/post';
+import { Post, PublishedPost } from './model/post';
 import { PostSerializer, createPost } from './repository/post_repository';
 
 (() => {
-  const postSerializer = (post: Post) =>
+  const postSerializer = (post: Post | PublishedPost) =>
     ({
       serialize() {
         return {

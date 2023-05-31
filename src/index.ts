@@ -1,7 +1,7 @@
-import { match, P } from 'ts-pattern';
+import { match } from 'ts-pattern';
 import { JsonType } from './core/serializable';
 import { Post, PublishedPost } from './model/post';
-import { PostSerializer, createPost } from './repository/post_repository';
+import { createPost, PostSerializer } from './repository/post_repository';
 
 (async () => {
   const postSerializer = (post: Post | PublishedPost) =>
@@ -44,7 +44,8 @@ import { PostSerializer, createPost } from './repository/post_repository';
         .update({
           title: 'new title4',
         })
-        .publish(new Date()),
+        .publish(new Date())
+        .unpublish(),
     ),
   );
 

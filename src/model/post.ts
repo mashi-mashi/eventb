@@ -92,10 +92,10 @@ class Post implements EventSourcedEntity<PostEvent, Post> {
           events: [...this.events, updatedEvent],
         });
       })
-      .with({ type: 'PostPublishedEvent' }, (event) => {
+      .with({ type: 'PostPublishedEvent' }, (PostPublishedEvent) => {
         return this.copyWith({
-          publishedDate: event.payload.publishedDate,
-          events: [...this.events, event],
+          publishedDate: PostPublishedEvent.payload.publishedDate,
+          events: [...this.events, PostPublishedEvent],
         });
       })
       .with({ type: 'PostUnPublishedEvent' }, () => {

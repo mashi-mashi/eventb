@@ -13,5 +13,5 @@ export async function createPost(db: DataBaseType, post: PostSerializer) {
     db.store(event);
   });
 
-  return post.clearEvents();
+  return post.callback();
 }

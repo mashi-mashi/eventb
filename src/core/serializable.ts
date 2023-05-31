@@ -8,7 +8,7 @@ type JsonType<T> = T & {
 type Serializable<T extends EventSourcedEntity<AnyType, AnyType>, E> = {
   serialize(): JsonType<T>;
   serializeEvents(): JsonType<E>[];
-  clearEvents(): T;
+  callback(): T;
 };
 
 export { Serializable, JsonType };

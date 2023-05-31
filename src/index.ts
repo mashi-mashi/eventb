@@ -15,7 +15,7 @@ import { PostSerializer, createPost } from './repository/post_repository';
           return JSON.parse(JSON.stringify(event));
         });
       },
-      clearEvents() {
+      callback() {
         return post.clearEvents();
       },
     } as PostSerializer);

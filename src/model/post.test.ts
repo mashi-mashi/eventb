@@ -1,7 +1,7 @@
-import { Post } from './post';
+import { Post, PublishedPost } from './post';
 
 describe('Post', () => {
-  describe('イベントの実行', () => {
+  describe('イベント', () => {
     test('初期化できる', () => {
       const post = Post.create({ title: 'title', content: 'content' });
       expect(post.title).toBe('title');
@@ -40,6 +40,33 @@ describe('Post', () => {
       expect(post.events.length).toBe(3);
       expect(post.lastEvent.type).toBe('PostPublishedEvent');
     });
+
+    test('イベントをクリアできる', () => {
+      const post = Post.create({ title: 'title', content: 'content' })
+        .applyEvent({
+          type: 'PostUpdatedEvent',
+          payload: {
+            title: 'new title',
+          },
+        })
+        .applyEvent({
+          type: 'PostPublishedEvent',
+        });
+      expect(post.events.length).toBe(3);
+      expect(post.lastEvent.type).toBe('PostPublishedEvent');
+
+      const clearedPost = post.clearEvents();
+      expect(clearedPost.events.length).toBe(0);
+    });
+
+    test('イベント操作は全てイミュータブルな操作であること', () => {
+      const post = Post.create({ title: 'title', content: 'content' });
+      const updatedPost = post.update({ title: 'new title' });
+
+      expect(post.title).toBe('title');
+      expect(updatedPost.title).toBe('new title');
+      expect(post).not.toBe(updatedPost);
+    });
   });
 
   describe('操作', () => {
@@ -63,5 +90,18 @@ describe('Post', () => {
     expect(post.events.length).toBe(2);
     expect(post.publishedDate).toBeDefined();
     expect(post.lastEvent.type).toBe('PostPublishedEvent');
+  });
+
+  test('publishした場合、PublishedPostクラスを返却する', () => {
+    const post = Post.create({ title: 'title', content: 'content' }).publish();
+    expect(post instanceof PublishedPost).toBeTruthy();
+  });
+
+  describe('PublishedPost Class', () => {
+    test('publishDateが存在しない場合は、初期化できない', () => {
+      expect(() => PublishedPost.fromPost(Post.create({ title: 'title', content: 'content' }))).toThrow(
+        'Post is not published yet.',
+      );
+    });
   });
 });

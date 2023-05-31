@@ -134,7 +134,7 @@ class PublishedPost implements EventSourcedEntity<EventType, PublishedPost> {
 
   static fromPost(post: Post): PublishedPost {
     if (!post.publishedDate) {
-      throw new Error('Post is not published');
+      throw new Error('Post is not published yet.');
     }
 
     return new PublishedPost(post.id, post.title, post.content, post.publishedDate, post.events);

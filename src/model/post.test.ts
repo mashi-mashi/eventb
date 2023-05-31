@@ -103,5 +103,15 @@ describe('Post', () => {
         'Post is not published yet.',
       );
     });
+
+    test('イベントを引き継いで初期化される', () => {
+      const published = Post.create({ title: 'title', content: 'content' }).update({ title: 'new title' }).publish();
+
+      expect(published.title).toBe('new title');
+      expect(published.content).toBe('content');
+      expect(published.publishedDate).toBeDefined();
+      expect(published.events.length).toBe(3);
+      expect(published instanceof PublishedPost).toBeTruthy();
+    });
   });
 });

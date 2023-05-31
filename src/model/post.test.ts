@@ -33,6 +33,9 @@ describe('Post', () => {
         })
         .applyEvent({
           type: 'PostPublishedEvent',
+          payload: {
+            publishedDate: new Date(),
+          },
         });
       expect(post.title).toBe('new title');
       expect(post.content).toBe('content');
@@ -51,6 +54,9 @@ describe('Post', () => {
         })
         .applyEvent({
           type: 'PostPublishedEvent',
+          payload: {
+            publishedDate: new Date(),
+          },
         });
       expect(post.events.length).toBe(3);
       expect(post.lastEvent.type).toBe('PostPublishedEvent');
@@ -83,7 +89,7 @@ describe('Post', () => {
   });
 
   test('publishイベントが発火する', () => {
-    const post = Post.create({ title: 'title', content: 'content' }).publish();
+    const post = Post.create({ title: 'title', content: 'content' }).publish(new Date());
 
     expect(post.title).toBe('title');
     expect(post.content).toBe('content');
@@ -93,7 +99,7 @@ describe('Post', () => {
   });
 
   test('publishした場合、PublishedPostクラスを返却する', () => {
-    const post = Post.create({ title: 'title', content: 'content' }).publish();
+    const post = Post.create({ title: 'title', content: 'content' }).publish(new Date());
     expect(post instanceof PublishedPost).toBeTruthy();
   });
 
@@ -105,7 +111,9 @@ describe('Post', () => {
     });
 
     test('イベントを引き継いで初期化される', () => {
-      const published = Post.create({ title: 'title', content: 'content' }).update({ title: 'new title' }).publish();
+      const published = Post.create({ title: 'title', content: 'content' })
+        .update({ title: 'new title' })
+        .publish(new Date());
 
       expect(published.title).toBe('new title');
       expect(published.content).toBe('content');
@@ -117,7 +125,7 @@ describe('Post', () => {
     test('unpublishメソッドを介して、Postクラスに交換できる', () => {
       const unpublished = Post.create({ title: 'title', content: 'content' })
         .update({ title: 'new title' })
-        .publish()
+        .publish(new Date())
         .unpublish();
 
       expect(unpublished.title).toBe('new title');

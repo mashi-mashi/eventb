@@ -63,10 +63,13 @@ class Post implements EventSourcedEntity<PostEvent, Post> {
     });
   }
 
-  public publish() {
+  public publish(date: Date) {
     return PublishedPost.fromPost(
       this.applyEvent({
         type: 'PostPublishedEvent',
+        payload: {
+          publishedDate: date,
+        },
       }),
     );
   }
@@ -87,9 +90,9 @@ class Post implements EventSourcedEntity<PostEvent, Post> {
           events: [...this.events, updatedEvent],
         });
       })
-      .with({ type: 'PostPublishedEvent' }, () => {
+      .with({ type: 'PostPublishedEvent' }, (event) => {
         return this.copyWith({
-          publishedDate: new Date(),
+          publishedDate: event.payload.publishedDate,
           events: [...this.events, event],
         });
       })
@@ -130,13 +133,31 @@ class PublishedPost implements EventSourcedEntity<PublishedPostEvent, PublishedP
     });
   }
 
+  private copyWith(
+    post: NestedPartial<PublishedPost> & {
+      publishedDate: Date;
+      events: PostEvent[]; /// イベントだけは型セーフ
+    },
+  ): PublishedPost {
+    return new PublishedPost(
+      this.id,
+      post.title ?? this.title,
+      post.content ?? this.content,
+      post.publishedDate ?? this.publishedDate,
+      post?.events ?? this.events,
+    );
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   applyEvent(_: PostEvent): PublishedPost {
     throw new Error('Method not implemented.');
   }
 
   clearEvents(): PublishedPost {
-    throw new Error('Method not implemented.');
+    return this.copyWith({
+      publishedDate: this.publishedDate,
+      events: [],
+    });
   }
 }
 

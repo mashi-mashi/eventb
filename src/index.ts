@@ -40,7 +40,7 @@ import { PostSerializer, createPost } from './repository/post_repository';
         .update({
           title: 'new title4',
         })
-        .publish(),
+        .publish(new Date()),
     ),
   );
 

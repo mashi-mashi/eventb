@@ -8,25 +8,28 @@ import { postSerializer } from './serializer/post_serializer';
     {
       store: async (any) => {
         console.log('stored!', any);
+        return Promise.resolve();
+      },
+      get: async (id) => {
+        throw new Error(`not implemented! ${id}`);
       },
     },
-    postSerializer(
-      Post.create({ title: 'title', content: 'content' })
-        .update({
-          title: 'new title1',
-        })
-        .update({
-          title: 'new title2',
-        })
-        .update({
-          title: 'new title3',
-        })
-        .update({
-          title: 'new title4',
-        })
-        .publish(new Date())
-        .unpublish(),
-    ),
+    postSerializer,
+    Post.create({ title: 'title', content: 'content' })
+      .update({
+        title: 'new title1',
+      })
+      .update({
+        title: 'new title2',
+      })
+      .update({
+        title: 'new title3',
+      })
+      .update({
+        title: 'new title4',
+      })
+      .publish(new Date())
+      .unpublish(),
   );
 
   match(s)

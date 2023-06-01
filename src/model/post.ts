@@ -25,10 +25,11 @@ class Post implements EventSourcedEntity<PostEvent, Post> {
   private constructor(
     public readonly title: string,
     public readonly content: string,
+    id?: IdType,
     publishedDate?: Date,
     events?: PostEvent[],
   ) {
-    this.id = generateId();
+    this.id = id ?? generateId();
     this.publishedDate = publishedDate;
     this.events = events ?? [];
   }
@@ -38,7 +39,27 @@ class Post implements EventSourcedEntity<PostEvent, Post> {
       events: PostEvent[]; /// イベントだけは型セーフ
     },
   ): Post {
-    return new Post(post.title || this.title, post.content || this.content, post.publishedDate, post?.events);
+    return new Post(
+      post.title || this.title,
+      post.content || this.content,
+      undefined,
+      post.publishedDate,
+      post?.events,
+    );
+  }
+
+  static initialize({
+    id,
+    title,
+    content,
+    publishedDate,
+  }: {
+    id: IdType;
+    title: string;
+    content: string;
+    publishedDate?: Date;
+  }): Post {
+    return new Post(title, content, id, publishedDate);
   }
 
   static create({ title, content }: { title: string; content: string }): Post {
@@ -52,7 +73,13 @@ class Post implements EventSourcedEntity<PostEvent, Post> {
   }
 
   static fromPublishedPost(publishedPost: PublishedPost): Post {
-    return new Post(publishedPost.title, publishedPost.content, publishedPost.publishedDate, publishedPost.events);
+    return new Post(
+      publishedPost.title,
+      publishedPost.content,
+      publishedPost.id,
+      publishedPost.publishedDate,
+      publishedPost.events,
+    );
   }
 
   public update({ title, content }: { title?: string; content?: string }) {
@@ -121,6 +148,20 @@ class PublishedPost implements EventSourcedEntity<PublishedPostEvent, PublishedP
 
   get lastEvent(): PublishedPostEvent {
     return this.events[this.events.length - 1];
+  }
+
+  static initialize({
+    id,
+    title,
+    content,
+    publishedDate,
+  }: {
+    id: IdType;
+    title: string;
+    content: string;
+    publishedDate: Date;
+  }) {
+    return new PublishedPost(id, title, content, publishedDate, []);
   }
 
   static fromPost(post: Post): PublishedPost {

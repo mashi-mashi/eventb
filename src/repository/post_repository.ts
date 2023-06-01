@@ -1,13 +1,11 @@
-import { JsonType, Serializable } from '../core/serializable';
-import { Post, PublishedPost } from '../model/post';
+import { JsonType } from '../core/serializable';
+import { PostSerializerType } from '../serializer/post_serializer';
 
 type DataBaseType = {
   store: <T>(any: JsonType<T>) => Promise<void>;
 };
 
-export type PostSerializer = Serializable<Post | PublishedPost, Event>;
-
-export async function createPost(db: DataBaseType, post: PostSerializer) {
+export async function createPost(db: DataBaseType, post: ReturnType<PostSerializerType>) {
   await db.store(post.serialize());
   await Promise.all(post.serializeEvents().map(db.store));
 

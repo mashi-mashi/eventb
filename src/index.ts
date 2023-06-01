@@ -1,29 +1,9 @@
 import { match } from 'ts-pattern';
-import { JsonType } from './core/serializable';
-import { Post, PublishedPost } from './model/post';
-import { createPost, PostSerializer } from './repository/post_repository';
+import { Post } from './model/post';
+import { createPost } from './repository/post_repository';
+import { postSerializer } from './serializer/post_serializer';
 
 (async () => {
-  const postSerializer = (post: Post | PublishedPost) =>
-    ({
-      serialize() {
-        return {
-          id: post.id,
-          title: post.title,
-          content: post.content,
-          publishedDate: post.publishedDate,
-        } as JsonType<Post>;
-      },
-      serializeEvents() {
-        return post.events.map((event) => {
-          return JSON.parse(JSON.stringify(event));
-        });
-      },
-      callback() {
-        return post.clearEvents();
-      },
-    } as PostSerializer);
-
   const s = await createPost(
     {
       store: async (any) => {

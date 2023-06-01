@@ -4,8 +4,9 @@ import { IdType, generateId } from '../lib/generateId';
 import { NestedPartial } from '../lib/type';
 import { PostEvent, PublishedPostEvent } from './post_event';
 
+type PostIdType = IdType<Post>;
 class Post implements EventSourcedEntity<PostEvent, Post> {
-  public readonly id: IdType;
+  public readonly id: PostIdType;
   public readonly publishedDate?: Date;
 
   readonly kind = 'Post';
@@ -25,11 +26,11 @@ class Post implements EventSourcedEntity<PostEvent, Post> {
   private constructor(
     public readonly title: string,
     public readonly content: string,
-    id?: IdType,
+    id?: PostIdType,
     publishedDate?: Date,
     events?: PostEvent[],
   ) {
-    this.id = id ?? generateId();
+    this.id = id ?? generateId<Post>();
     this.publishedDate = publishedDate;
     this.events = events ?? [];
   }
@@ -54,7 +55,7 @@ class Post implements EventSourcedEntity<PostEvent, Post> {
     content,
     publishedDate,
   }: {
-    id: IdType;
+    id: PostIdType;
     title: string;
     content: string;
     publishedDate?: Date;
@@ -139,7 +140,7 @@ class PublishedPost implements EventSourcedEntity<PublishedPostEvent, PublishedP
   readonly kind = 'PublishedPost';
 
   private constructor(
-    public readonly id: IdType,
+    public readonly id: PostIdType,
     public readonly title: string,
     public readonly content: string,
     public readonly publishedDate: Date,
@@ -156,7 +157,7 @@ class PublishedPost implements EventSourcedEntity<PublishedPostEvent, PublishedP
     content,
     publishedDate,
   }: {
-    id: IdType;
+    id: PostIdType;
     title: string;
     content: string;
     publishedDate: Date;

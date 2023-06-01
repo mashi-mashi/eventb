@@ -1,18 +1,19 @@
-import { JsonType, Serializable } from './serializable';
-import { Post, PublishedPost } from '../model/post';
 import { match } from 'ts-pattern';
+import { Post, PublishedPost } from '../model/post';
 import { PostEvent } from '../model/post_event';
+import { JsonType, Serializable } from './serializable';
 
 export type PostSerializerType = Serializable<Post | PublishedPost, PostEvent>;
 
 export const postSerializer: PostSerializerType = {
   serialize(post: Post | PublishedPost) {
     return {
-      id: post.id,
+      id: post.id.toString(),
       title: post.title,
       content: post.content,
       publishedDate: post.publishedDate,
-    } as JsonType<Post>;
+      kind: post.kind,
+    } as JsonType<Post | PublishedPost>;
   },
   desrialize(json: JsonType<Post | PublishedPost>) {
     return match(json)

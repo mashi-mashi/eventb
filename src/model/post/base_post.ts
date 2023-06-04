@@ -1,6 +1,6 @@
 import { EventSourcedEntity } from '../../core/event';
 import { IdType } from '../../lib/generateId';
-import { AnyType } from '../../lib/type';
+import { UserIdType } from '../user/base_user';
 import { PostEvent } from './post_event';
 
 export type PostIdType = IdType<'Post'>;
@@ -9,7 +9,8 @@ type PostKindType = 'Post' | 'PublishedPost';
 
 export abstract class BasePost implements EventSourcedEntity<PostEvent, BasePost> {
   constructor(
-    public readonly id: IdType<AnyType>,
+    public readonly id: PostIdType,
+    public readonly authorId: UserIdType,
     public readonly kind: PostKindType,
     public readonly title: string,
     public readonly content: string,

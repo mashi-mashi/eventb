@@ -15,9 +15,9 @@ export type RepositoryType<T extends EventSourcedEntity<E, T>, E extends EventTy
   f: (db: DataBaseType, serializer: Serializable<T, E>) => Promise<T>,
 ) => Promise<T>;
 
-type PostRepositoryType = RepositoryType<BasePost, PostEvent>;
+export type PostRepositoryType = RepositoryType<BasePost, PostEvent>;
 
-const postRepository: PostRepositoryType = (f) => {
+export const postRepository: PostRepositoryType = (f) => {
   return f(
     {
       store: async (any) => {

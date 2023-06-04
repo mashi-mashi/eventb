@@ -22,6 +22,7 @@ export const postSerializer: PostSerializerType = {
       .with({ kind: 'Post' }, (json) => {
         return Post.of({
           id: json.id,
+          authorId: json.authorId,
           title: json.title,
           content: json.content,
           publishedDate: json.publishedDate,
@@ -30,9 +31,11 @@ export const postSerializer: PostSerializerType = {
       .with({ kind: 'PublishedPost' }, (json) => {
         return PublishedPost.of({
           id: json.id,
+          authorId: json.authorId,
           title: json.title,
           content: json.content,
-          publishedDate: json.publishedDate,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          publishedDate: json.publishedDate!,
         });
       })
       .exhaustive();

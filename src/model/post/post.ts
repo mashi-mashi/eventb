@@ -4,6 +4,7 @@ import { PostEvent } from './post_event';
 import { PublishedPost } from './published_post';
 import { generateId } from '../../lib/generateId';
 import { NestedPartial } from '../../lib/type';
+import { UserIdType } from '../user/base_user';
 
 export class Post extends BasePost {
   public readonly id: PostIdType;
@@ -14,6 +15,7 @@ export class Post extends BasePost {
   public readonly events: PostEvent[] = [];
 
   private constructor(
+    public readonly authorId: UserIdType,
     public readonly title: string,
     public readonly content: string,
     id?: PostIdType,
@@ -21,7 +23,7 @@ export class Post extends BasePost {
     events?: PostEvent[],
   ) {
     id = id ?? generateId<'Post'>();
-    super(id, 'Post', title, content, publishedDate, events);
+    super(id, authorId, 'Post', title, content, publishedDate, events);
 
     this.id = id;
     this.publishedDate = publishedDate;
@@ -34,6 +36,7 @@ export class Post extends BasePost {
     },
   ): Post {
     return new Post(
+      this.authorId,
       post.title || this.title,
       post.content || this.content,
       undefined,
@@ -48,20 +51,23 @@ export class Post extends BasePost {
 
   static of({
     id,
+    authorId,
     title,
     content,
     publishedDate,
   }: {
     id: PostIdType;
+    authorId: UserIdType;
     title: string;
     content: string;
     publishedDate?: Date;
   }): Post {
-    return new Post(title, content, id, publishedDate);
+    return new Post(authorId, title, content, id, publishedDate);
   }
 
   static unpublish(publishedPost: PublishedPost): Post {
     return new Post(
+      publishedPost.authorId,
       publishedPost.title,
       publishedPost.content,
       publishedPost.id,
@@ -72,8 +78,8 @@ export class Post extends BasePost {
     });
   }
 
-  static create({ title, content }: { title: string; content: string }): Post {
-    return new Post('', '').applyEvent({
+  static create({ authorId, title, content }: { authorId: UserIdType; title: string; content: string }): Post {
+    return new Post(authorId, '', '').applyEvent({
       type: 'PostCreatedEvent',
       payload: {
         title,

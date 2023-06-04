@@ -1,10 +1,11 @@
 import { match } from 'ts-pattern';
 import { createPost } from './repository/post_repository';
 import { Post } from './model/post/post';
+import { UserIdType } from './model/user/base_user';
 
 (async () => {
   const s = await createPost(
-    Post.create({ title: 'title', content: 'content' })
+    Post.create({ authorId: 'author' as UserIdType, title: 'title', content: 'content' })
       .update({
         title: 'new title1',
       })

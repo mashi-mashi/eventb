@@ -23,7 +23,7 @@ export class Post extends BasePost {
     id = id ?? generateId<'Post'>();
     super(id, 'Post', title, content, publishedDate, events);
 
-    this.id = id ?? generateId<Post>();
+    this.id = id;
     this.publishedDate = publishedDate;
     this.events = events ?? [];
   }

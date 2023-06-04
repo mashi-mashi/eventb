@@ -24,6 +24,7 @@ import { createPost } from './repository/post_repository';
   match(s)
     .with({ kind: 'Post' }, (post) => {
       console.log('post', post);
+      Post.of(post).lastEvent?.type;
     })
     .with({ kind: 'PublishedPost' }, (publishedPost) => {
       console.log('PublishedPost!!!!!!!', publishedPost);

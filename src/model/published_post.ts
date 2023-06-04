@@ -1,9 +1,9 @@
-import { EventSourcedEntity } from '../core/event';
 import { NestedPartial } from '../lib/type';
-import { Post, PostIdType } from './post';
+import { BasePost, PostIdType } from './abstract';
+import { Post } from './post';
 import { PostEvent, PublishedPostEvent } from './post_event';
 
-export class PublishedPost implements EventSourcedEntity<PublishedPostEvent, PublishedPost> {
+export class PublishedPost extends BasePost {
   readonly kind = 'PublishedPost';
 
   private constructor(
@@ -12,10 +12,8 @@ export class PublishedPost implements EventSourcedEntity<PublishedPostEvent, Pub
     public readonly content: string,
     public readonly publishedDate: Date,
     public readonly events: PublishedPostEvent[],
-  ) {}
-
-  get lastEvent(): PublishedPostEvent | undefined {
-    return this.events.length > 0 ? this.events[this.events.length - 1] : undefined;
+  ) {
+    super(id, 'PublishedPost', title, content, publishedDate, events);
   }
 
   get isPublished(): boolean {
@@ -61,11 +59,6 @@ export class PublishedPost implements EventSourcedEntity<PublishedPostEvent, Pub
       post.publishedDate ?? this.publishedDate,
       post?.events ?? this.events,
     );
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  applyEvent(_: PostEvent): PublishedPost {
-    throw new Error('Method not implemented.');
   }
 
   clearEvents(): PublishedPost {

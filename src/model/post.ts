@@ -1,28 +1,17 @@
 import { match } from 'ts-pattern';
-import { EventSourcedEntity } from '../core/event';
-import { IdType, generateId } from '../lib/generateId';
+import { generateId } from '../lib/generateId';
 import { NestedPartial } from '../lib/type';
+import { BasePost, PostIdType } from './abstract';
 import { PostEvent } from './post_event';
 import { PublishedPost } from './published_post';
 
-export type PostIdType = IdType<Post>;
-export class Post implements EventSourcedEntity<PostEvent, Post> {
+export class Post extends BasePost {
   public readonly id: PostIdType;
   public readonly publishedDate?: Date;
 
   readonly kind = 'Post';
 
   public readonly events: PostEvent[] = [];
-
-  get lastEvent(): PostEvent | undefined {
-    return this.events.length > 0 ? this.events[this.events.length - 1] : undefined;
-  }
-
-  clearEvents(): Post {
-    return this.copyWith({
-      events: [],
-    });
-  }
 
   private constructor(
     public readonly title: string,
@@ -31,6 +20,9 @@ export class Post implements EventSourcedEntity<PostEvent, Post> {
     publishedDate?: Date,
     events?: PostEvent[],
   ) {
+    id = id ?? generateId<'Post'>();
+    super(id, 'Post', title, content, publishedDate, events);
+
     this.id = id ?? generateId<Post>();
     this.publishedDate = publishedDate;
     this.events = events ?? [];
@@ -140,5 +132,12 @@ export class Post implements EventSourcedEntity<PostEvent, Post> {
         });
       })
       .exhaustive();
+  }
+
+  clearEvents(): Post {
+    return this.copyWith({
+      publishedDate: this.publishedDate,
+      events: [],
+    });
   }
 }

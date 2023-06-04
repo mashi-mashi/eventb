@@ -1,10 +1,11 @@
 import { match } from 'ts-pattern';
 import { PostEvent } from '../model/post_event';
-import { JsonType, Serializable } from './serializable';
 import { PublishedPost } from '../model/published_post';
+import { JsonType, Serializable } from './serializable';
+import { BasePost } from '../model/abstract';
 import { Post } from '../model/post';
 
-export type PostSerializerType = Serializable<Post | PublishedPost, PostEvent>;
+export type PostSerializerType = Serializable<BasePost, PostEvent>;
 
 export const postSerializer: PostSerializerType = {
   serialize(post: Post | PublishedPost) {

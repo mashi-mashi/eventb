@@ -5,10 +5,12 @@ import { PostEvent } from './post_event';
 
 export type PostIdType = IdType<'Post'>;
 
+type PostKindType = 'Post' | 'PublishedPost';
+
 export abstract class BasePost implements EventSourcedEntity<PostEvent, BasePost> {
   constructor(
     public readonly id: IdType<AnyType>,
-    public readonly kind: 'Post' | 'PublishedPost',
+    public readonly kind: PostKindType,
     public readonly title: string,
     public readonly content: string,
     public readonly publishedDate?: Date,

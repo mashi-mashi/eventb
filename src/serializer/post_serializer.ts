@@ -2,7 +2,7 @@ import { match } from 'ts-pattern';
 import { PostEvent } from '../model/post_event';
 import { PublishedPost } from '../model/published_post';
 import { JsonType, Serializable } from './serializable';
-import { BasePost } from '../model/abstract';
+import { BasePost } from '../model/base_post';
 import { Post } from '../model/post';
 
 export type PostSerializerType = Serializable<BasePost, PostEvent>;

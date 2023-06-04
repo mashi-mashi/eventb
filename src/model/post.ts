@@ -1,7 +1,7 @@
 import { match } from 'ts-pattern';
 import { generateId } from '../lib/generateId';
 import { NestedPartial } from '../lib/type';
-import { BasePost, PostIdType } from './abstract';
+import { BasePost, PostIdType } from './base_post';
 import { PostEvent } from './post_event';
 import { PublishedPost } from './published_post';
 

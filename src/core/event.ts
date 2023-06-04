@@ -5,7 +5,7 @@ type EventType = {
 type EventSourcedEntity<E extends EventType, T> = {
   readonly kind: string;
   readonly events: E[];
-  readonly lastEvent: E;
+  readonly lastEvent: E | undefined;
 
   applyEvent(event: E): T;
 

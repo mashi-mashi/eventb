@@ -1,4 +1,5 @@
-import { Post, PublishedPost } from './post';
+import { Post } from './post';
+import { PublishedPost } from './published_post';
 
 describe('Post', () => {
   describe('イベント', () => {
@@ -7,7 +8,7 @@ describe('Post', () => {
       expect(post.title).toBe('title');
       expect(post.content).toBe('content');
       expect(post.events.length).toBe(1);
-      expect(post.lastEvent.type).toBe('PostCreatedEvent');
+      expect(post.lastEvent?.type).toBe('PostCreatedEvent');
     });
 
     test('イベントを介してUpdateできる', () => {
@@ -20,7 +21,7 @@ describe('Post', () => {
       expect(post.title).toBe('new title');
       expect(post.content).toBe('content');
       expect(post.events.length).toBe(2);
-      expect(post.lastEvent.type).toBe('PostUpdatedEvent');
+      expect(post.lastEvent?.type).toBe('PostUpdatedEvent');
     });
 
     test('イベントを介してPublishできる', () => {
@@ -41,7 +42,7 @@ describe('Post', () => {
       expect(post.content).toBe('content');
       expect(post.publishedDate).toBeDefined();
       expect(post.events.length).toBe(3);
-      expect(post.lastEvent.type).toBe('PostPublishedEvent');
+      expect(post.lastEvent?.type).toBe('PostPublishedEvent');
     });
 
     test('イベントをクリアできる', () => {
@@ -59,7 +60,7 @@ describe('Post', () => {
           },
         });
       expect(post.events.length).toBe(3);
-      expect(post.lastEvent.type).toBe('PostPublishedEvent');
+      expect(post.lastEvent?.type).toBe('PostPublishedEvent');
 
       const clearedPost = post.clearEvents();
       expect(clearedPost.events.length).toBe(0);
@@ -84,7 +85,7 @@ describe('Post', () => {
       expect(post.title).toBe('new title');
       expect(post.content).toBe('content');
       expect(post.events.length).toBe(2);
-      expect(post.lastEvent.type).toBe('PostUpdatedEvent');
+      expect(post.lastEvent?.type).toBe('PostUpdatedEvent');
     });
   });
 
@@ -95,7 +96,7 @@ describe('Post', () => {
     expect(post.content).toBe('content');
     expect(post.events.length).toBe(2);
     expect(post.publishedDate).toBeDefined();
-    expect(post.lastEvent.type).toBe('PostPublishedEvent');
+    expect(post.lastEvent?.type).toBe('PostPublishedEvent');
   });
 
   test('publishした場合、PublishedPostクラスを返却する', () => {

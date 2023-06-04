@@ -1,7 +1,8 @@
 import { match } from 'ts-pattern';
-import { Post, PublishedPost } from '../model/post';
 import { PostEvent } from '../model/post_event';
 import { JsonType, Serializable } from './serializable';
+import { PublishedPost } from '../model/published_post';
+import { Post } from '../model/post';
 
 export type PostSerializerType = Serializable<Post | PublishedPost, PostEvent>;
 
@@ -18,7 +19,7 @@ export const postSerializer: PostSerializerType = {
   desrialize(json: JsonType<Post | PublishedPost>) {
     return match(json)
       .with({ kind: 'Post' }, (json) => {
-        return Post.initialize({
+        return Post.of({
           id: json.id,
           title: json.title,
           content: json.content,
@@ -26,7 +27,7 @@ export const postSerializer: PostSerializerType = {
         });
       })
       .with({ kind: 'PublishedPost' }, (json) => {
-        return PublishedPost.initialize({
+        return PublishedPost.of({
           id: json.id,
           title: json.title,
           content: json.content,

@@ -1,4 +1,5 @@
-import { Post, PublishedPost } from '../model/post';
+import { Post } from '../model/post';
+import { PublishedPost } from '../model/published_post';
 import { PostSerializerType, postSerializer } from '../serializer/post_serializer';
 import { JsonType } from '../serializer/serializable';
 

@@ -2,10 +2,11 @@ import { match } from 'ts-pattern';
 import { EventSourcedEntity } from '../core/event';
 import { IdType, generateId } from '../lib/generateId';
 import { NestedPartial } from '../lib/type';
-import { PostEvent, PublishedPostEvent } from './post_event';
+import { PostEvent } from './post_event';
+import { PublishedPost } from './published_post';
 
-type PostIdType = IdType<Post>;
-class Post implements EventSourcedEntity<PostEvent, Post> {
+export type PostIdType = IdType<Post>;
+export class Post implements EventSourcedEntity<PostEvent, Post> {
   public readonly id: PostIdType;
   public readonly publishedDate?: Date;
 
@@ -13,8 +14,8 @@ class Post implements EventSourcedEntity<PostEvent, Post> {
 
   public readonly events: PostEvent[] = [];
 
-  get lastEvent(): PostEvent {
-    return this.events[this.events.length - 1];
+  get lastEvent(): PostEvent | undefined {
+    return this.events.length > 0 ? this.events[this.events.length - 1] : undefined;
   }
 
   clearEvents(): Post {
@@ -49,7 +50,11 @@ class Post implements EventSourcedEntity<PostEvent, Post> {
     );
   }
 
-  static initialize({
+  get isPublished(): boolean {
+    return false;
+  }
+
+  static of({
     id,
     title,
     content,
@@ -63,6 +68,18 @@ class Post implements EventSourcedEntity<PostEvent, Post> {
     return new Post(title, content, id, publishedDate);
   }
 
+  static unpublish(publishedPost: PublishedPost): Post {
+    return new Post(
+      publishedPost.title,
+      publishedPost.content,
+      publishedPost.id,
+      undefined,
+      publishedPost.events,
+    ).applyEvent({
+      type: 'PostUnPublishedEvent',
+    });
+  }
+
   static create({ title, content }: { title: string; content: string }): Post {
     return new Post('', '').applyEvent({
       type: 'PostCreatedEvent',
@@ -71,16 +88,6 @@ class Post implements EventSourcedEntity<PostEvent, Post> {
         content,
       },
     });
-  }
-
-  static fromPublishedPost(publishedPost: PublishedPost): Post {
-    return new Post(
-      publishedPost.title,
-      publishedPost.content,
-      publishedPost.id,
-      publishedPost.publishedDate,
-      publishedPost.events,
-    );
   }
 
   public update({ title, content }: { title?: string; content?: string }) {
@@ -135,76 +142,3 @@ class Post implements EventSourcedEntity<PostEvent, Post> {
       .exhaustive();
   }
 }
-
-class PublishedPost implements EventSourcedEntity<PublishedPostEvent, PublishedPost> {
-  readonly kind = 'PublishedPost';
-
-  private constructor(
-    public readonly id: PostIdType,
-    public readonly title: string,
-    public readonly content: string,
-    public readonly publishedDate: Date,
-    public readonly events: PublishedPostEvent[],
-  ) {}
-
-  get lastEvent(): PublishedPostEvent {
-    return this.events[this.events.length - 1];
-  }
-
-  static initialize({
-    id,
-    title,
-    content,
-    publishedDate,
-  }: {
-    id: PostIdType;
-    title: string;
-    content: string;
-    publishedDate: Date;
-  }) {
-    return new PublishedPost(id, title, content, publishedDate, []);
-  }
-
-  static fromPost(post: Post): PublishedPost {
-    if (!post.publishedDate) {
-      throw new Error('Post is not published yet.');
-    }
-
-    return new PublishedPost(post.id, post.title, post.content, post.publishedDate, post.events);
-  }
-
-  public unpublish(): Post {
-    return Post.fromPublishedPost(this).applyEvent({
-      type: 'PostUnPublishedEvent',
-    });
-  }
-
-  private copyWith(
-    post: NestedPartial<PublishedPost> & {
-      publishedDate: Date;
-      events: PostEvent[]; /// イベントだけは型セーフ
-    },
-  ): PublishedPost {
-    return new PublishedPost(
-      this.id,
-      post.title ?? this.title,
-      post.content ?? this.content,
-      post.publishedDate ?? this.publishedDate,
-      post?.events ?? this.events,
-    );
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  applyEvent(_: PostEvent): PublishedPost {
-    throw new Error('Method not implemented.');
-  }
-
-  clearEvents(): PublishedPost {
-    return this.copyWith({
-      publishedDate: this.publishedDate,
-      events: [],
-    });
-  }
-}
-
-export { Post, PublishedPost };

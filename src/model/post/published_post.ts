@@ -1,4 +1,4 @@
-import { NestedPartial } from '../lib/type';
+import { NestedPartial } from '../../lib/type';
 import { BasePost, PostIdType } from './base_post';
 import { Post } from './post';
 import { PostEvent, PublishedPostEvent } from './post_event';

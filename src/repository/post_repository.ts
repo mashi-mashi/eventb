@@ -1,8 +1,8 @@
 import { EventSourcedEntity, EventType } from '../core/event';
-import { BasePost } from '../model/base_post';
-import { Post } from '../model/post';
-import { PostEvent } from '../model/post_event';
-import { PublishedPost } from '../model/published_post';
+import { BasePost } from '../model/post/base_post';
+import { Post } from '../model/post/post';
+import { PostEvent } from '../model/post/post_event';
+import { PublishedPost } from '../model/post/published_post';
 import { postSerializer } from '../serializer/post_serializer';
 import { JsonType, Serializable } from '../serializer/serializable';
 

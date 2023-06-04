@@ -1,6 +1,6 @@
 import { match } from 'ts-pattern';
-import { Post } from './model/post';
 import { createPost } from './repository/post_repository';
+import { Post } from './model/post/post';
 
 (async () => {
   const s = await createPost(

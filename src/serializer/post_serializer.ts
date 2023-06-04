@@ -1,9 +1,9 @@
 import { match } from 'ts-pattern';
-import { PostEvent } from '../model/post_event';
-import { PublishedPost } from '../model/published_post';
 import { JsonType, Serializable } from './serializable';
-import { BasePost } from '../model/base_post';
-import { Post } from '../model/post';
+import { BasePost } from '../model/post/base_post';
+import { Post } from '../model/post/post';
+import { PostEvent } from '../model/post/post_event';
+import { PublishedPost } from '../model/post/published_post';
 
 export type PostSerializerType = Serializable<BasePost, PostEvent>;
 

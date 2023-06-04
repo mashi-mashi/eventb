@@ -1,4 +1,4 @@
-import { EventType } from '../core/event';
+import { EventType } from '../../core/event';
 
 type PostCreatedEvent = {
   type: 'PostCreatedEvent';

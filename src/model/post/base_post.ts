@@ -1,6 +1,6 @@
-import { EventSourcedEntity } from '../core/event';
-import { IdType } from '../lib/generateId';
-import { AnyType } from '../lib/type';
+import { EventSourcedEntity } from '../../core/event';
+import { IdType } from '../../lib/generateId';
+import { AnyType } from '../../lib/type';
 import { PostEvent } from './post_event';
 
 export type PostIdType = IdType<'Post'>;

@@ -1,9 +1,7 @@
 import { Result } from '../core/result';
-import { AnyType } from '../lib/type';
 import { BasePost } from '../model/post/base_post';
 import { Post } from '../model/post/post';
-import { UserIdType } from '../model/user/base_user';
-import { User } from '../model/user/user';
+import { UseCaseType, ContextType } from './use_case';
 
 export class CreatePostUseCase implements UseCaseType<{ title: string; content: string }, BasePost> {
   constructor(private readonly storePost: (post: Post) => Promise<BasePost>) {}
@@ -16,21 +14,3 @@ export class CreatePostUseCase implements UseCaseType<{ title: string; content: 
     });
   }
 }
-
-type ContextType = {
-  user?: User;
-};
-
-type UseCaseType<Input, Output> = {
-  execute: (param: { context: ContextType; input: Input }) => Promise<Result<Output, Error>>;
-};
-
-export const withAuthor = <Input, Output>(req: AnyType, usecase: UseCaseType<Input, Output>) => {
-  return async (input: Input) => {
-    const context = {
-      user: User.of({ id: 'author' as UserIdType, name: 'author' }),
-    };
-
-    return usecase.execute({ context, input });
-  };
-};

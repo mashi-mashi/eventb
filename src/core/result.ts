@@ -38,4 +38,8 @@ export class Result<T, E extends Error> {
       )
       .exhaustive();
   }
+
+  flatMap<U>(fn: (value: T) => Result<U, E>): Result<U, E> {
+    return this.ok ? fn(this.value as T) : Result.error(this.error as E);
+  }
 }

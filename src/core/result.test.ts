@@ -90,4 +90,43 @@ describe('Result', () => {
       expect(transformedResult).toBe(246);
     });
   });
+
+  describe('flatMap', () => {
+    it('should apply the function and return a new Result if the original Result is successful', () => {
+      const result = Result.ok(5);
+      const doubledResult = result.flatMap((value) => Result.ok(value * 2));
+
+      expect(
+        doubledResult.when({
+          ok: (value) => value.toString(),
+          err: (error) => error.message,
+        }),
+      ).toBe('10');
+    });
+
+    it('should return the original Result if the original Result is an error', () => {
+      const error = new Error('original error');
+      const result = Result.error(error);
+      const doubledResult = result.flatMap((value) => Result.ok(value * 2));
+
+      expect(
+        doubledResult.when({
+          ok: (value) => value.toString(),
+          err: (error) => error.message,
+        }),
+      ).toBe('original error');
+    });
+
+    it('should handle a function that returns a Result.error', () => {
+      const result = Result.ok(5);
+      const errorResult = result.flatMap(() => Result.error(new Error('new error')));
+
+      expect(
+        errorResult.when({
+          ok: (value) => value,
+          err: (error) => error.message,
+        }),
+      ).toBe('new error');
+    });
+  });
 });

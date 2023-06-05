@@ -1,5 +1,5 @@
 import { EventSourcedEntity, EventType } from '../core/event';
-import { BasePost } from '../model/post/base_post';
+import { BasePost, PostIdType } from '../model/post/base_post';
 import { Post } from '../model/post/post';
 import { PostEvent } from '../model/post/post_event';
 import { PublishedPost } from '../model/post/published_post';
@@ -40,7 +40,7 @@ export async function createPost(post: BasePost) {
   });
 }
 
-export async function getPost(id: string) {
+export async function getPost(id: PostIdType) {
   return await postRepository(async (db, serializer) => {
     return await db.get<Post | PublishedPost>(id).then(serializer.desrialize);
   });

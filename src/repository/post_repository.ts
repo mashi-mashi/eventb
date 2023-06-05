@@ -32,7 +32,7 @@ export const postRepository: PostRepositoryType = (f) => {
   );
 };
 
-export async function createPost(post: BasePost) {
+export async function storePost(post: BasePost) {
   return await postRepository(async (db, serializer) => {
     await db.store(serializer.serialize(post));
     await Promise.all(serializer.serializeEvents(post.events).map(db.store));

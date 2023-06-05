@@ -11,6 +11,22 @@ export class Result<T, E extends Error> {
     return new Result(false, undefined as never, error);
   }
 
+  static wrap<T>(f: () => T): Result<T, Error> {
+    try {
+      return Result.ok(f());
+    } catch (e) {
+      return Result.error(e as Error);
+    }
+  }
+
+  static async asyncWrap<T>(f: () => Promise<T>): Promise<Result<T, Error>> {
+    try {
+      return Result.ok(await f());
+    } catch (e) {
+      return Result.error(e as Error);
+    }
+  }
+
   when<U>(handlers: { ok: (value: T) => U; err: (error: E) => U }): U {
     return match({ kind: this.ok ? ('ok' as const) : ('err' as const), payload: this.ok ? this.value : this.error })
       .with({ kind: 'ok' }, ({ payload }) =>

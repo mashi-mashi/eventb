@@ -2,7 +2,7 @@ import { match } from 'ts-pattern';
 import { createPost } from './repository/post_repository';
 import { Post } from './model/post/post';
 import { UserIdType } from './model/user/base_user';
-import { CreatePostUseCase, withAuthor } from './application/create_post_usecase';
+import { CreatePostUseCase, withAuthor } from './application/create_post_use_case';
 
 (async () => {
   // const s = await createPost(

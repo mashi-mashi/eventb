@@ -3,7 +3,7 @@ import { match } from 'ts-pattern';
 export class Result<T, E extends Error> {
   private constructor(private readonly ok: boolean, private readonly value?: T, private readonly error?: E) {}
 
-  static ok<T>(value: T): Result<T, never> {
+  static ok<T>(value: T): Result<T, Error> {
     return new Result(true, value);
   }
 

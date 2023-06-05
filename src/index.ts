@@ -2,6 +2,7 @@ import { match } from 'ts-pattern';
 import { createPost } from './repository/post_repository';
 import { Post } from './model/post/post';
 import { UserIdType } from './model/user/base_user';
+import { CreatePostUseCase, withAuthor } from './application/create_post_usecase';
 
 (async () => {
   const s = await createPost(
@@ -31,4 +32,11 @@ import { UserIdType } from './model/user/base_user';
       console.log('PublishedPost!!!!!!!', publishedPost);
     })
     .exhaustive();
+
+  await withAuthor(
+    {},
+    new CreatePostUseCase(),
+  )({ title: 'title', content: 'content' }).then((post) => {
+    console.log(post);
+  });
 })();

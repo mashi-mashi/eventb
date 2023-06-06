@@ -1,7 +1,7 @@
-import { Result } from '../core/result';
-import { BasePost } from '../model/post/base_post';
-import { Post } from '../model/post/post';
-import { PostRepositoryType } from '../repository/post_repository';
+import { Result } from '../../core/result';
+import { BasePost } from '../../model/post/base_post';
+import { Post } from '../../model/post/post';
+import { PostRepositoryType } from '../../repository/post_repository';
 import { ContextType, UseCaseType } from './use_case';
 
 export class CreatePostUseCase implements UseCaseType<{ title: string; content: string }, BasePost> {

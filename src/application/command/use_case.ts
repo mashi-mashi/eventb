@@ -1,7 +1,7 @@
-import { Result } from '../core/result';
-import { AnyType } from '../lib/type';
-import { UserIdType } from '../model/user/base_user';
-import { User } from '../model/user/user';
+import { Result } from '../../core/result';
+import { AnyType } from '../../lib/type';
+import { UserIdType } from '../../model/user/base_user';
+import { User } from '../../model/user/user';
 
 export type ContextType = {
   user?: User;

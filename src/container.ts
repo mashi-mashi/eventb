@@ -1,7 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import { AnyType } from './lib/type';
-import { PostRepositoryOnPrisma } from './repository/post_repository';
+import { PostRepositoryOnPrisma, PostRepositoryType } from './repository/post_repository';
 import { postSerializer } from './serializer/post_serializer';
+import { CreatePostUseCase } from './application/command/create_post_use_case';
+import { PostQuery } from './application/query/post_query';
 
 interface Constructor<T> {
   new (...args: AnyType[]): T;
@@ -39,6 +41,8 @@ export class Container {
 const container = Container.getInstance();
 
 container.register('Prisma', PrismaClient);
-container.register('PostRepository', PostRepositoryOnPrisma, container.resolve('Prisma'), postSerializer);
+container.register('PostRepository', PostRepositoryOnPrisma, container.resolve<PrismaClient>('Prisma'), postSerializer);
+container.register('CreatePostUseCase', CreatePostUseCase, container.resolve<PostRepositoryType>('PostRepository'));
+container.register('PostQuery', PostQuery, container.resolve<PrismaClient>('Prisma'));
 
 export { container };

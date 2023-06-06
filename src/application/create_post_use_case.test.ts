@@ -1,10 +1,32 @@
+import { PostIdType } from '../model/post/base_post';
+import { Post } from '../model/post/post';
 import { UserIdType } from '../model/user/base_user';
 import { User } from '../model/user/user';
+import { PostRepositoryType } from '../repository/post_repository';
 import { CreatePostUseCase } from './create_post_use_case';
-import { storePost } from '../repository/post_repository';
+
+const mockPostRepository: PostRepositoryType = {
+  store(post) {
+    console.log('stored!', post);
+    return Promise.resolve(
+      Post.of({
+        id: 'test' as PostIdType,
+        authorId: 'test' as UserIdType,
+        title: 'test',
+        content: 'test',
+      }),
+    );
+  },
+};
+
+const mockThrowPostRepository: PostRepositoryType = {
+  store() {
+    return Promise.reject(new Error('Repository error'));
+  },
+};
 
 describe('CreatePostUseCase', () => {
-  const usecase = new CreatePostUseCase(storePost);
+  const usecase = new CreatePostUseCase(mockPostRepository);
 
   describe('execute', () => {
     it('idが入っていなければResult.errorを返す', async () => {
@@ -37,7 +59,7 @@ describe('CreatePostUseCase', () => {
     });
 
     it('Repositoryが例外を返したときは、Result.errorを返す', async () => {
-      const result = await new CreatePostUseCase(() => Promise.reject(new Error('Repository error'))).execute({
+      const result = await new CreatePostUseCase(mockThrowPostRepository).execute({
         context: {
           user: User.of({ id: 'author' as UserIdType, name: 'author' }),
         },

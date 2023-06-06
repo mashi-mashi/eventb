@@ -1,4 +1,5 @@
 type EventType = {
+  entityId: string;
   type: string;
 };
 

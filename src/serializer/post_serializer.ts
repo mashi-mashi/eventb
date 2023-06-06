@@ -1,16 +1,17 @@
 import { match } from 'ts-pattern';
-import { JsonType, Serializable } from './serializable';
 import { BasePost } from '../model/post/base_post';
 import { Post } from '../model/post/post';
 import { PostEvent } from '../model/post/post_event';
 import { PublishedPost } from '../model/post/published_post';
+import { JsonType, Serializable } from './serializable';
 
 export type PostSerializerType = Serializable<BasePost, PostEvent>;
 
 export const postSerializer: PostSerializerType = {
-  serialize(post: Post | PublishedPost) {
+  serialize(post: Partial<Post | PublishedPost>) {
     return {
-      id: post.id.toString(),
+      id: post.id,
+      authorId: post.authorId,
       title: post.title,
       content: post.content,
       publishedDate: post.publishedDate,
@@ -42,7 +43,11 @@ export const postSerializer: PostSerializerType = {
   },
   serializeEvents(events: PostEvent[]) {
     return events.map((event) => {
-      return JSON.parse(JSON.stringify(event));
+      return {
+        entityId: event.entityId,
+        type: event.type,
+        payload: event,
+      };
     });
   },
   callback(post: Post | PublishedPost) {

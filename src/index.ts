@@ -1,20 +1,20 @@
-import { CreatePostUseCase } from './application/create_post_use_case';
-import { withAuthor } from './application/use_case';
-import { storePost } from './repository/post_repository';
+import { PrismaClient } from '@prisma/client';
+import { Post } from './model/post/post';
+import { UserIdType } from './model/user/base_user';
+import { PostRepositoryOnPrisma } from './repository/post_repository';
+import { postSerializer } from './serializer/post_serializer';
 
 (async () => {
-  await withAuthor(
-    {},
-    new CreatePostUseCase(storePost),
-  )({ title: 'title', content: 'content' }).then((result) => {
-    console.log(
-      'CreatePostUseCase',
-      result.when({
-        ok: (value) => {
-          return { value, message: 'ok' };
-        },
-        err: (error) => ({ message: error.message }),
-      }),
-    );
-  });
+  const prisma = new PrismaClient();
+  const postRepository = new PostRepositoryOnPrisma(prisma, postSerializer);
+
+  const w = await postRepository.store(
+    Post.create({
+      authorId: '8e897d73-e0dd-466a-bb15-b2505c9b6cb4' as UserIdType,
+      title: 'test',
+      content: 'test',
+    }),
+  );
+
+  console.log(w);
 })();

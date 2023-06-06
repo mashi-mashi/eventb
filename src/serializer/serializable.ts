@@ -5,11 +5,18 @@ type JsonType<T> = T & {
   __type: 'serializable';
 };
 
+type EventType = {
+  type: string;
+  entityId: string;
+  payload: object;
+  timestamp?: Date;
+};
+
 type Serializable<T extends EventSourcedEntity<AnyType, AnyType>, E> = {
-  serialize(m: T): JsonType<T>;
+  serialize(m: Partial<T>): JsonType<T>;
   desrialize(json: JsonType<T>): T;
 
-  serializeEvents(events: E[]): JsonType<E>[];
+  serializeEvents(events: E[]): EventType[];
   callback(m: T): T;
 };
 

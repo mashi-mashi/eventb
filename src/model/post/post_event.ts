@@ -2,6 +2,7 @@ import { EventType } from '../../core/event';
 
 type PostCreatedEvent = {
   type: 'PostCreatedEvent';
+
   payload: {
     title: string;
     content: string;

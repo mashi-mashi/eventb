@@ -16,6 +16,7 @@ describe('Post', () => {
 
     test('イベントを介してUpdateできる', () => {
       const post = Post.create({ authorId: createUserId('author'), title: 'title', content: 'content' }).applyEvent({
+        entityId: 'id',
         type: 'PostUpdatedEvent',
         payload: {
           title: 'new title',
@@ -30,12 +31,14 @@ describe('Post', () => {
     test('イベントを介してPublishできる', () => {
       const post = Post.create({ authorId: createUserId('author'), title: 'title', content: 'content' })
         .applyEvent({
+          entityId: 'id',
           type: 'PostUpdatedEvent',
           payload: {
             title: 'new title',
           },
         })
         .applyEvent({
+          entityId: 'id',
           type: 'PostPublishedEvent',
           payload: {
             publishedDate: new Date(),
@@ -51,12 +54,14 @@ describe('Post', () => {
     test('イベントをクリアできる', () => {
       const post = Post.create({ authorId: createUserId('author'), title: 'title', content: 'content' })
         .applyEvent({
+          entityId: 'id',
           type: 'PostUpdatedEvent',
           payload: {
             title: 'new title',
           },
         })
         .applyEvent({
+          entityId: 'id',
           type: 'PostPublishedEvent',
           payload: {
             publishedDate: new Date(),

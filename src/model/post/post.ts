@@ -74,13 +74,16 @@ export class Post extends BasePost {
       undefined,
       publishedPost.events,
     ).applyEvent({
+      entityId: publishedPost.id,
       type: 'PostUnPublishedEvent',
     });
   }
 
   static create({ authorId, title, content }: { authorId: UserIdType; title: string; content: string }): Post {
-    return new Post(authorId, '', '').applyEvent({
+    const p = new Post(authorId, '', '');
+    return p.applyEvent({
       type: 'PostCreatedEvent',
+      entityId: p.id,
       payload: {
         title,
         content,
@@ -90,6 +93,7 @@ export class Post extends BasePost {
 
   public update({ title, content }: { title?: string; content?: string }) {
     return this.applyEvent({
+      entityId: this.id,
       type: 'PostUpdatedEvent',
       payload: {
         title,
@@ -101,6 +105,7 @@ export class Post extends BasePost {
   public publish(date: Date) {
     return PublishedPost.fromPost(
       this.applyEvent({
+        entityId: this.id,
         type: 'PostPublishedEvent',
         payload: {
           publishedDate: date,

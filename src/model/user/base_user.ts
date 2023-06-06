@@ -1,4 +1,4 @@
-import { EventSourcedEntity } from '../../core/event';
+import { EventSourcedEntity, EventType } from '../../core/event';
 import { IdType } from '../../lib/generateId';
 
 export type UserIdType = IdType<'User'>;
@@ -9,7 +9,7 @@ type UserCreatedEvent = {
     name: string;
     email?: string;
   };
-};
+} & EventType;
 
 export type UserEvent = UserCreatedEvent;
 

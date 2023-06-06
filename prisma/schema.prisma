@@ -1,0 +1,42 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SUPABASE_SHADOW_DB_URL")
+}
+
+model User {
+  id    String  @id @default(dbgenerated("gen_random_uuid()"))
+  name  String
+  email String? @unique
+  kind  String
+  posts Post[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Post {
+  id          String    @id @default(dbgenerated("gen_random_uuid()"))
+  authorId    String
+  kind        String
+  title       String
+  content     String
+  publishedAt DateTime?
+
+  user User @relation(fields: [authorId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Event {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  type      String
+  payload   String
+  timestamp DateTime @default(now())
+}

@@ -31,3 +31,4 @@ src/temp/*
 /important.txt
 
 /node_modules
+.env*

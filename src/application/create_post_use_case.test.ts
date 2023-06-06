@@ -17,10 +17,25 @@ const mockPostRepository: PostRepositoryType = {
       }),
     );
   },
+
+  get(id) {
+    return Promise.resolve(
+      Post.of({
+        id: id,
+        authorId: 'test' as UserIdType,
+        title: 'test',
+        content: 'test',
+      }),
+    );
+  },
 };
 
 const mockThrowPostRepository: PostRepositoryType = {
   store() {
+    return Promise.reject(new Error('Repository error'));
+  },
+
+  get() {
     return Promise.reject(new Error('Repository error'));
   },
 };

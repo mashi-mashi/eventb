@@ -1,15 +1,13 @@
 import { PrismaClient } from '@prisma/client';
-import { EventSourcedEntity, EventType } from '../core/event';
 import { AnyType } from '../lib/type';
-import { BasePost } from '../model/post/base_post';
+import { BasePost, PostIdType } from '../model/post/base_post';
 import { PostEvent } from '../model/post/post_event';
-import { postSerializer } from '../serializer/post_serializer';
 import { JsonType, Serializable } from '../serializer/serializable';
 
-type DataBaseType = {
-  store: <T>(any: JsonType<T>) => Promise<void>;
-  get: <T>(id: string) => Promise<JsonType<T>>;
-};
+// type DataBaseType = {
+//   store: <T>(any: JsonType<T>) => Promise<void>;
+//   get: <T>(id: string) => Promise<JsonType<T>>;
+// };
 
 // export type RepositoryType<T extends EventSourcedEntity<E, T>, E extends EventType> = (
 //   f: (db: DataBaseType, serializer: Serializable<T, E>) => Promise<T>,
@@ -34,10 +32,17 @@ type DataBaseType = {
 
 export type PostRepositoryType = {
   store: (post: Partial<BasePost>) => Promise<BasePost>;
+  get: (id: PostIdType) => Promise<BasePost>;
 };
 
 export class PostRepositoryOnPrisma implements PostRepositoryType {
   constructor(private readonly prisma: PrismaClient, private readonly serializer: Serializable<BasePost, PostEvent>) {}
+
+  async get(id: PostIdType) {
+    const post = await this.prisma.post.findUnique({ where: { id } });
+    if (!post) throw new Error(`Post not found! ${id}`);
+    return this.serializer.desrialize(post as AnyType as JsonType<BasePost>);
+  }
 
   async store(post: Partial<BasePost>) {
     const [updated] = await this.prisma.$transaction([

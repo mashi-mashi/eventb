@@ -5,7 +5,7 @@ import { UserIdType } from './model/user/base_user';
 import { User } from './model/user/user';
 
 (async () => {
-  const d = await container.resolve<CreatePostUseCase>('CreatePostUseCase').execute({
+  const d = await container.resolve(CreatePostUseCase).execute({
     context: {
       user: User.of({
         id: '5b4d1511-6915-4040-bad1-1b212bb7a637' as UserIdType,
@@ -17,8 +17,6 @@ import { User } from './model/user/user';
 
   console.log(d);
 
-  const q = await container
-    .resolve<PostQuery>('PostQuery')
-    .listByAuthorId('5b4d1511-6915-4040-bad1-1b212bb7a637' as UserIdType);
+  const q = await container.resolve(PostQuery).listByAuthorId('5b4d1511-6915-4040-bad1-1b212bb7a637' as UserIdType);
   console.log(q);
 })();

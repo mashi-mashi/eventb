@@ -1,13 +1,11 @@
 import { PrismaClient } from '@prisma/client';
-import { AnyType } from './lib/type';
-import { PostRepositoryOnPrisma, PostRepositoryType } from './repository/post_repository';
-import { postSerializer } from './serializer/post_serializer';
 import { CreatePostUseCase } from './application/command/create_post_use_case';
 import { PostQuery } from './application/query/post_query';
+import { AnyType } from './lib/type';
+import { PostRepositoryOnPrisma } from './repository/post_repository';
+import { postSerializer } from './serializer/post_serializer';
 
-interface Constructor<T> {
-  new (...args: AnyType[]): T;
-}
+type Token<T = AnyType> = { new (...args: AnyType[]): T };
 
 export class Container {
   private static instance: Container;
@@ -23,14 +21,15 @@ export class Container {
     return Container.instance;
   }
 
-  public register<T>(token: string, constructor: Constructor<T>, ...args: AnyType[]): void {
+  public register<T>(token: Token<T>, ...args: ConstructorParameters<Token<T>>): Container {
     if (this.services.has(token)) {
       throw new Error(`Token ${token} is already registered`);
     }
-    this.services.set(token, new constructor(...args));
+    this.services.set(token, new token(...args));
+    return this;
   }
 
-  public resolve<T>(token: string): T {
+  resolve<T>(token: Token<T>): T {
     if (!this.services.has(token)) {
       throw new Error(`Token ${token} is not registered`);
     }
@@ -40,9 +39,10 @@ export class Container {
 
 const container = Container.getInstance();
 
-container.register('Prisma', PrismaClient);
-container.register('PostRepository', PostRepositoryOnPrisma, container.resolve<PrismaClient>('Prisma'), postSerializer);
-container.register('CreatePostUseCase', CreatePostUseCase, container.resolve<PostRepositoryType>('PostRepository'));
-container.register('PostQuery', PostQuery, container.resolve<PrismaClient>('Prisma'));
+container
+  .register(PrismaClient)
+  .register(PostRepositoryOnPrisma, container.resolve(PrismaClient), postSerializer)
+  .register(CreatePostUseCase, container.resolve(PostRepositoryOnPrisma))
+  .register(PostQuery, container.resolve(PrismaClient));
 
 export { container };

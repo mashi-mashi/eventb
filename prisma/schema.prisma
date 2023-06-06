@@ -36,7 +36,8 @@ model Post {
 
 model Event {
   id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  entityId  String
   type      String
-  payload   String
+  payload   Json
   timestamp DateTime @default(now())
 }

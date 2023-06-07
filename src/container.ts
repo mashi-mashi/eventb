@@ -4,6 +4,7 @@ import { PostQuery } from './application/query/post_query';
 import { AnyType } from './lib/type';
 import { PostRepositoryOnPrisma } from './repository/post_repository';
 import { postSerializer } from './serializer/post_serializer';
+import { performOn, pipe } from './lib/util';
 
 type Token<T extends new (...args: AnyType[]) => AnyType> = T;
 
@@ -37,12 +38,26 @@ export class Container {
   }
 }
 
-const container = Container.getInstance();
+export const container = performOn(
+  Container.getInstance(),
+  (c) => c.register(PrismaClient),
+  (c) => c.register(PostRepositoryOnPrisma, c.resolve(PrismaClient), postSerializer),
+  (c) => c.register(CreatePostUseCase, c.resolve(PostRepositoryOnPrisma)),
+  (c) => c.register(PostQuery, c.resolve(PrismaClient)),
+);
 
-container
-  .register(PrismaClient)
-  .register(PostRepositoryOnPrisma, container.resolve(PrismaClient), postSerializer)
-  .register(CreatePostUseCase, container.resolve(PostRepositoryOnPrisma))
-  .register(PostQuery, container.resolve(PrismaClient));
+// export const container = pipe(
+//   Container.getInstance,
+//   (c) => c.register(PrismaClient),
+//   (c) => c.register(PostRepositoryOnPrisma, c.resolve(PrismaClient), postSerializer),
+//   (c) => c.register(CreatePostUseCase, c.resolve(PostRepositoryOnPrisma)),
+//   (c) => c.register(PostQuery, c.resolve(PrismaClient)),
+// )(Container.getInstance());
 
-export { container };
+// container
+//   .register(PrismaClient)
+//   .register(PostRepositoryOnPrisma, container.resolve(PrismaClient), postSerializer)
+//   .register(CreatePostUseCase, container.resolve(PostRepositoryOnPrisma))
+//   .register(PostQuery, container.resolve(PrismaClient));
+
+// export { container };

@@ -3,6 +3,7 @@ import { BaseUser, UserEvent, UserIdType } from './base_user';
 import { NestedPartial } from '../../lib/type';
 import { generateId } from '../../lib/generateId';
 import { ActorActionType } from '../actor/actor';
+import { performOn } from '../../lib/util';
 
 export class User extends BaseUser implements ActorActionType {
   public readonly events: UserEvent[] = [];

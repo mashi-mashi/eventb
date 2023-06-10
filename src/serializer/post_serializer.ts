@@ -1,45 +1,49 @@
+import { Post as PrismaPost } from '@prisma/client';
 import { match } from 'ts-pattern';
-import { BasePost } from '../model/post/base_post';
+import { BasePost, PostIdType } from '../model/post/base_post';
 import { Post } from '../model/post/post';
 import { PostEvent } from '../model/post/post_event';
 import { PublishedPost } from '../model/post/published_post';
-import { JsonType, Serializable } from './serializable';
+import { UserIdType } from '../model/user/base_user';
+import { Serializable, WithoutTimestamp } from './serializable';
 
-export type PostSerializerType = Serializable<BasePost, PostEvent>;
+export type PostSerializerType = Serializable<BasePost, PrismaPost, PostEvent>;
 
 export const postSerializer: PostSerializerType = {
-  serialize(post: Partial<Post | PublishedPost>) {
+  serialize(post) {
     return {
       id: post.id,
       authorId: post.authorId,
       title: post.title,
       content: post.content,
-      publishedDate: post.publishedDate,
+      publishedAt: post.publishedAt,
       kind: post.kind,
-    } as JsonType<Post | PublishedPost>;
+    } as WithoutTimestamp<PrismaPost>;
   },
-  desrialize(json: JsonType<Post | PublishedPost>) {
+  desrialize(json) {
     return match(json)
       .with({ kind: 'Post' }, (json) => {
         return Post.of({
-          id: json.id,
-          authorId: json.authorId,
+          id: json.id as PostIdType,
+          authorId: json.authorId as UserIdType,
           title: json.title,
           content: json.content,
-          publishedDate: json.publishedDate,
+          publishedAt: json.publishedAt ?? undefined,
         });
       })
       .with({ kind: 'PublishedPost' }, (json) => {
         return PublishedPost.of({
-          id: json.id,
-          authorId: json.authorId,
+          id: json.id as PostIdType,
+          authorId: json.authorId as UserIdType,
           title: json.title,
           content: json.content,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          publishedDate: json.publishedDate!,
+          publishedAt: json.publishedAt!,
         });
       })
-      .exhaustive();
+      .otherwise(() => {
+        throw new Error('Invalid json');
+      });
   },
   serializeEvents(events: PostEvent[]) {
     return events.map((event) => {
@@ -49,8 +53,5 @@ export const postSerializer: PostSerializerType = {
         payload: event,
       };
     });
-  },
-  callback(post: Post | PublishedPost) {
-    return post.clearEvents();
   },
 };

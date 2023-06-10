@@ -1,10 +1,6 @@
 import { AnyType } from '../lib/type';
 import { EventSourcedEntity } from '../core/event';
 
-type JsonType<T> = T & {
-  __type: 'serializable';
-};
-
 type EventType = {
   type: string;
   entityId: string;
@@ -12,12 +8,13 @@ type EventType = {
   timestamp?: Date;
 };
 
-type Serializable<T extends EventSourcedEntity<AnyType, AnyType>, E> = {
-  serialize(m: Partial<T>): JsonType<T>;
-  desrialize(json: JsonType<T>): T;
+type WithoutTimestamp<T> = Omit<T, 'createdAt' | 'updatedAt'>;
+
+type Serializable<T extends EventSourcedEntity<AnyType, AnyType>, JsonType, E> = {
+  serialize(m: Partial<T>): WithoutTimestamp<JsonType>;
+  desrialize(json: JsonType): T;
 
   serializeEvents(events: E[]): EventType[];
-  callback(m: T): T;
 };
 
-export { Serializable, JsonType };
+export { Serializable, WithoutTimestamp };

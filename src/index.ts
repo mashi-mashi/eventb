@@ -17,6 +17,6 @@ import { User } from './model/user/user';
 
   console.log(d);
 
-  const q = await container.resolve(PostQuery).listByAuthorId('5b4d1511-6915-4040-bad1-1b212bb7a637' as UserIdType);
-  console.log(q);
+  // const q = await container.resolve(PostQuery).listByAuthorId('5b4d1511-6915-4040-bad1-1b212bb7a637' as UserIdType);
+  // console.log(q);
 })();

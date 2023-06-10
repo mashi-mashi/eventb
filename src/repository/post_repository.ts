@@ -1,8 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { AnyType } from '../lib/type';
 import { BasePost, PostIdType } from '../model/post/base_post';
-import { PostEvent } from '../model/post/post_event';
-import { JsonType, Serializable } from '../serializer/serializable';
+import { PostSerializerType } from '../serializer/post_serializer';
 
 // type DataBaseType = {
 //   store: <T>(any: JsonType<T>) => Promise<void>;
@@ -36,12 +34,12 @@ export type PostRepositoryType = {
 };
 
 export class PostRepositoryOnPrisma implements PostRepositoryType {
-  constructor(private readonly prisma: PrismaClient, private readonly serializer: Serializable<BasePost, PostEvent>) {}
+  constructor(private readonly prisma: PrismaClient, private readonly serializer: PostSerializerType) {}
 
   async get(id: PostIdType) {
     const post = await this.prisma.post.findUnique({ where: { id } });
     if (!post) throw new Error(`Post not found! ${id}`);
-    return this.serializer.desrialize(post as AnyType as JsonType<BasePost>);
+    return this.serializer.desrialize(post);
   }
 
   async store(post: Partial<BasePost>) {
@@ -58,7 +56,6 @@ export class PostRepositoryOnPrisma implements PostRepositoryType {
       }),
     ]);
 
-    /// TODO:
-    return this.serializer.desrialize(updated as AnyType as JsonType<BasePost>);
+    return this.serializer.desrialize(updated);
   }
 }

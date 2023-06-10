@@ -41,12 +41,12 @@ describe('Post', () => {
           entityId: 'id',
           type: 'PostPublishedEvent',
           payload: {
-            publishedDate: new Date(),
+            publishedAt: new Date(),
           },
         });
       expect(post.title).toBe('new title');
       expect(post.content).toBe('content');
-      expect(post.publishedDate).toBeDefined();
+      expect(post.publishedAt).toBeDefined();
       expect(post.events.length).toBe(3);
       expect(post.lastEvent?.type).toBe('PostPublishedEvent');
     });
@@ -64,7 +64,7 @@ describe('Post', () => {
           entityId: 'id',
           type: 'PostPublishedEvent',
           payload: {
-            publishedDate: new Date(),
+            publishedAt: new Date(),
           },
         });
       expect(post.events.length).toBe(3);
@@ -105,7 +105,7 @@ describe('Post', () => {
     expect(post.title).toBe('title');
     expect(post.content).toBe('content');
     expect(post.events.length).toBe(2);
-    expect(post.publishedDate).toBeDefined();
+    expect(post.publishedAt).toBeDefined();
     expect(post.lastEvent?.type).toBe('PostPublishedEvent');
   });
 
@@ -130,7 +130,7 @@ describe('Post', () => {
 
       expect(published.title).toBe('new title');
       expect(published.content).toBe('content');
-      expect(published.publishedDate).toBeDefined();
+      expect(published.publishedAt).toBeDefined();
       expect(published.events.length).toBe(3);
       expect(published instanceof PublishedPost).toBeTruthy();
     });
@@ -143,7 +143,7 @@ describe('Post', () => {
 
       expect(unpublished.title).toBe('new title');
       expect(unpublished.content).toBe('content');
-      expect(unpublished.publishedDate).toBeUndefined();
+      expect(unpublished.publishedAt).toBeUndefined();
       expect(unpublished.events.length).toBe(4);
       expect(unpublished instanceof Post).toBeTruthy();
     });

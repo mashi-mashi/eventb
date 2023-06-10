@@ -20,7 +20,7 @@ type PostUpdatedEvent = {
 type PostPublishedEvent = {
   type: 'PostPublishedEvent';
   payload: {
-    publishedDate: Date;
+    publishedAt: Date;
   };
 } & EventType;
 

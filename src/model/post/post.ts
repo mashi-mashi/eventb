@@ -8,7 +8,7 @@ import { UserIdType } from '../user/base_user';
 
 export class Post extends BasePost {
   public readonly id: PostIdType;
-  public readonly publishedDate?: Date;
+  public readonly publishedAt?: Date;
 
   readonly kind = 'Post';
 
@@ -19,14 +19,14 @@ export class Post extends BasePost {
     public readonly title: string,
     public readonly content: string,
     id?: PostIdType,
-    publishedDate?: Date,
+    publishedAt?: Date,
     events?: PostEvent[],
   ) {
     id = id ?? generateId<'Post'>();
-    super(id, authorId, 'Post', title, content, publishedDate, events);
+    super(id, authorId, 'Post', title, content, publishedAt, events);
 
     this.id = id;
-    this.publishedDate = publishedDate;
+    this.publishedAt = publishedAt;
     this.events = events ?? [];
   }
 
@@ -40,7 +40,7 @@ export class Post extends BasePost {
       post.title || this.title,
       post.content || this.content,
       undefined,
-      post.publishedDate,
+      post.publishedAt,
       post?.events,
     );
   }
@@ -54,15 +54,15 @@ export class Post extends BasePost {
     authorId,
     title,
     content,
-    publishedDate,
+    publishedAt,
   }: {
     id: PostIdType;
     authorId: UserIdType;
     title: string;
     content: string;
-    publishedDate?: Date;
+    publishedAt?: Date;
   }): Post {
-    return new Post(authorId, title, content, id, publishedDate);
+    return new Post(authorId, title, content, id, publishedAt);
   }
 
   static unpublish(publishedPost: PublishedPost): Post {
@@ -108,7 +108,7 @@ export class Post extends BasePost {
         entityId: this.id,
         type: 'PostPublishedEvent',
         payload: {
-          publishedDate: date,
+          publishedAt: date,
         },
       }),
     );
@@ -132,13 +132,13 @@ export class Post extends BasePost {
       })
       .with({ type: 'PostPublishedEvent' }, (PostPublishedEvent) => {
         return this.copyWith({
-          publishedDate: PostPublishedEvent.payload.publishedDate,
+          publishedAt: PostPublishedEvent.payload.publishedAt,
           events: [...this.events, PostPublishedEvent],
         });
       })
       .with({ type: 'PostUnPublishedEvent' }, () => {
         return this.copyWith({
-          publishedDate: undefined,
+          publishedAt: undefined,
           events: [...this.events, event],
         });
       })
@@ -147,7 +147,7 @@ export class Post extends BasePost {
 
   clearEvents(): Post {
     return this.copyWith({
-      publishedDate: this.publishedDate,
+      publishedAt: this.publishedAt,
       events: [],
     });
   }

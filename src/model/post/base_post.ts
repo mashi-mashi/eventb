@@ -14,7 +14,7 @@ export abstract class BasePost implements EventSourcedEntity<PostEvent, BasePost
     public readonly kind: PostKindType,
     public readonly title: string,
     public readonly content: string,
-    public readonly publishedDate?: Date,
+    public readonly publishedAt?: Date,
     public readonly events: PostEvent[] = [],
   ) {}
 

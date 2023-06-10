@@ -1,8 +1,7 @@
 import { container } from '../../container';
 import { Result } from '../../core/result';
 import { AnyType } from '../../lib/type';
-import { UserIdType } from '../../model/user/base_user';
-import { User } from '../../model/user/user';
+import { User, UserIdType } from '../../model/user/user';
 import { UserRepositoryOnPrisma } from '../../repository/user_repository';
 
 export type ContextType = {

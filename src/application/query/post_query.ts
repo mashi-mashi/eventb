@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { UserIdType } from '../../model/user/base_user';
 import { PostIdType } from '../../model/post/base_post';
+import { UserIdType } from '../../model/user/user';
 
 export class PostQuery {
   constructor(private readonly prisma: PrismaClient) {}

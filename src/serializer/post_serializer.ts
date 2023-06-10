@@ -4,8 +4,8 @@ import { BasePost, PostIdType } from '../model/post/base_post';
 import { Post } from '../model/post/post';
 import { PostEvent } from '../model/post/post_event';
 import { PublishedPost } from '../model/post/published_post';
-import { UserIdType } from '../model/user/base_user';
 import { Serializable, WithoutTimestamp } from './serializable';
+import { UserIdType } from '../model/user/user';
 
 export type PostSerializerType = Serializable<BasePost, PrismaPost, PostEvent>;
 

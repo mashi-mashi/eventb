@@ -1,10 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { BaseUser, UserIdType } from '../model/user/base_user';
+import { User, UserIdType } from '../model/user/user';
 import { UserSerializerType } from '../serializer/user_serializer';
 
 export type UserRepositoryType = {
-  store: (post: Partial<BaseUser>) => Promise<BaseUser>;
-  get: (id: UserIdType) => Promise<BaseUser>;
+  store: (post: Partial<User>) => Promise<User>;
+  get: (id: UserIdType) => Promise<User>;
 };
 
 export class UserRepositoryOnPrisma implements UserRepositoryType {
@@ -16,7 +16,7 @@ export class UserRepositoryOnPrisma implements UserRepositoryType {
     return this.serializer.desrialize(user);
   }
 
-  async store(user: Partial<BaseUser>) {
+  async store(user: Partial<User>) {
     const [updated] = await this.prisma.$transaction([
       this.prisma.user.upsert({
         where: { id: user.id },

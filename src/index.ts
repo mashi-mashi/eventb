@@ -1,8 +1,6 @@
 import { CreatePostUseCase } from './application/command/create_post_use_case';
-import { PostQuery } from './application/query/post_query';
 import { container } from './container';
-import { UserIdType } from './model/user/base_user';
-import { User } from './model/user/user';
+import { User, UserIdType } from './model/user/user';
 
 (async () => {
   const d = await container.resolve(CreatePostUseCase).execute({

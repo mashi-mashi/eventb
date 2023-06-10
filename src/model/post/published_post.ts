@@ -1,5 +1,5 @@
 import { NestedPartial } from '../../lib/type';
-import { UserIdType } from '../user/base_user';
+import { UserIdType } from '../user/user';
 import { BasePost, PostIdType } from './base_post';
 import { Post } from './post';
 import { PostEvent, PublishedPostEvent } from './post_event';

@@ -1,7 +1,6 @@
 import { PostIdType } from '../../model/post/base_post';
 import { Post } from '../../model/post/post';
-import { UserIdType } from '../../model/user/base_user';
-import { User } from '../../model/user/user';
+import { User, UserIdType } from '../../model/user/user';
 import { PostRepositoryType } from '../../repository/post_repository';
 import { CreatePostUseCase } from './create_post_use_case';
 

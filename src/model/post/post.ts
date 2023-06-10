@@ -4,7 +4,7 @@ import { PostEvent } from './post_event';
 import { PublishedPost } from './published_post';
 import { generateId } from '../../lib/generateId';
 import { NestedPartial } from '../../lib/type';
-import { UserIdType } from '../user/base_user';
+import { UserIdType } from '../user/user';
 
 export class Post extends BasePost {
   public readonly id: PostIdType;

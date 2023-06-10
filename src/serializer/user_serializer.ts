@@ -1,10 +1,9 @@
 import { User as PrismaUser } from '@prisma/client';
 import { match } from 'ts-pattern';
-import { BaseUser, UserEvent, UserIdType } from '../model/user/base_user';
-import { User } from '../model/user/user';
+import { User, UserEvent, UserIdType } from '../model/user/user';
 import { Serializable, WithoutTimestamp } from './serializable';
 
-export type UserSerializerType = Serializable<BaseUser, PrismaUser, UserEvent>;
+export type UserSerializerType = Serializable<User, PrismaUser, UserEvent>;
 
 export const userSerializer: UserSerializerType = {
   serialize(user) {

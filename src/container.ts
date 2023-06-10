@@ -5,6 +5,8 @@ import { AnyType } from './lib/type';
 import { performOn } from './lib/util';
 import { PostRepositoryOnPrisma } from './repository/post_repository';
 import { postSerializer } from './serializer/post_serializer';
+import { UserRepositoryOnPrisma } from './repository/user_repository';
+import { userSerializer } from './serializer/user_serializer';
 
 type Token<T extends new (...args: AnyType[]) => AnyType> = T;
 
@@ -43,6 +45,7 @@ export const container = performOn(
   (c) => c.register(PrismaClient),
   (c) => c.register(PostQuery, c.resolve(PrismaClient)),
   (c) => c.register(PostRepositoryOnPrisma, c.resolve(PrismaClient), postSerializer),
+  (c) => c.register(UserRepositoryOnPrisma, c.resolve(PrismaClient), userSerializer),
   (c) => c.register(CreatePostUseCase, c.resolve(PostRepositoryOnPrisma)),
 );
 

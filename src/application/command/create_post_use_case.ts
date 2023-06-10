@@ -23,8 +23,6 @@ export class CreatePostUseCase implements UseCaseType<{ title: string; content: 
               .with({ kind: 'PublishedPost' }, (p) => p)
               .exhaustive(),
         );
-
-        // return Post.create({ authorId: user.id, title: input.title, content: input.content });
       });
 
       return this.postRepository.store(created);

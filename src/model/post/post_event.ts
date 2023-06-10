@@ -11,6 +11,7 @@ type PostCreatedEvent = {
 
 type PostUpdatedEvent = {
   type: 'PostUpdatedEvent';
+
   payload: {
     title?: string;
     content?: string;
@@ -19,16 +20,17 @@ type PostUpdatedEvent = {
 
 type PostPublishedEvent = {
   type: 'PostPublishedEvent';
+
   payload: {
     publishedAt: Date;
   };
 } & EventType;
 
-type PostEvent = PostCreatedEvent | PostUpdatedEvent | PostPublishedEvent | PostUnPublishedEvent;
-
 type PostUnPublishedEvent = {
   type: 'PostUnPublishedEvent';
 } & EventType;
+
+type PostEvent = PostCreatedEvent | PostUpdatedEvent | PostPublishedEvent | PostUnPublishedEvent;
 
 type PublishedPostEvent = PostEvent;
 

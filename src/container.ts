@@ -41,18 +41,19 @@ export class Container {
 export const container = performOn(
   Container.getInstance(),
   (c) => c.register(PrismaClient),
+  (c) => c.register(PostQuery, c.resolve(PrismaClient)),
+  (c) => c.register(PostRepositoryOnPrisma, c.resolve(PrismaClient), postSerializer),
+  (c) => c.register(CreatePostUseCase, c.resolve(PostRepositoryOnPrisma)),
+);
+
+export const container2 = pipe(
+  (c: Container) => c.register(PrismaClient),
   (c) => c.register(PostRepositoryOnPrisma, c.resolve(PrismaClient), postSerializer),
   (c) => c.register(CreatePostUseCase, c.resolve(PostRepositoryOnPrisma)),
   (c) => c.register(PostQuery, c.resolve(PrismaClient)),
-);
+)(Container.getInstance());
 
-// export const container = pipe(
-//   Container.getInstance,
-//   (c) => c.register(PrismaClient),
-//   (c) => c.register(PostRepositoryOnPrisma, c.resolve(PrismaClient), postSerializer),
-//   (c) => c.register(CreatePostUseCase, c.resolve(PostRepositoryOnPrisma)),
-//   (c) => c.register(PostQuery, c.resolve(PrismaClient)),
-// )(Container.getInstance());
+// const container2222 = container2(Container.getInstance());
 
 // container
 //   .register(PrismaClient)

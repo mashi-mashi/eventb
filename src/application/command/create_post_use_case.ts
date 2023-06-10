@@ -9,8 +9,12 @@ export class CreatePostUseCase implements UseCaseType<{ title: string; content: 
 
   async execute({ context, input }: { context: ContextType; input: { title: string; content: string } }) {
     return Result.asyncWrap(() => {
-      if (!context.user?.id) throw new Error('User is not logged in.');
-      const created = Post.create({ authorId: context.user.id, title: input.title, content: input.content });
+      if (!context.user) throw new Error('User is not logged in.');
+
+      const created = context.user.performAction((user) =>
+        Post.create({ authorId: user.id, title: input.title, content: input.content }),
+      );
+
       return this.postRepository.store(created);
     });
   }

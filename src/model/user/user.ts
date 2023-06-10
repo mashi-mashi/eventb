@@ -2,8 +2,9 @@ import { match } from 'ts-pattern';
 import { BaseUser, UserEvent, UserIdType } from './base_user';
 import { NestedPartial } from '../../lib/type';
 import { generateId } from '../../lib/generateId';
+import { ActorActionType } from '../actor/actor';
 
-export class User extends BaseUser {
+export class User extends BaseUser implements ActorActionType {
   public readonly events: UserEvent[] = [];
 
   private constructor(
@@ -44,5 +45,9 @@ export class User extends BaseUser {
       email: input.email ?? this.email,
       events: input.events ?? input.events,
     });
+  }
+
+  performAction<T>(usecaseFunction: (user: User) => T): T {
+    return usecaseFunction(this);
   }
 }

@@ -1,6 +1,5 @@
 import { container } from '../../container';
 import { Result } from '../../core/result';
-import { AnyType } from '../../lib/type';
 import { User, UserIdType } from '../../model/user/user';
 import { UserRepositoryOnPrisma } from '../../repository/user_repository';
 
@@ -12,8 +11,8 @@ export type UseCaseType<Input, Output> = {
   execute: (param: { context: ContextType; input: Input }) => Promise<Result<Output, Error>>;
 };
 
-export const withAuthor = <Input, Output>(req: AnyType, usecase: UseCaseType<Input, Output>) => {
-  return async (input: Input) => {
+export const withAuthor = <Input, Output>(usecase: UseCaseType<Input, Output>) => {
+  return async (req: { authorId?: UserIdType; input: Input }) => {
     return Result.asyncWrap(async () => {
       if (req.authorId === undefined) throw new Error('authorId is undefined');
 
@@ -25,7 +24,7 @@ export const withAuthor = <Input, Output>(req: AnyType, usecase: UseCaseType<Inp
         user: author as User,
       };
 
-      return usecase.execute({ context, input });
-    }).then((result) => result.flatMap);
+      return usecase.execute({ context, input: req.input });
+    }).then((result) => result.flatMap((v) => v));
   };
 };

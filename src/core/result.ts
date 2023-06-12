@@ -1,5 +1,4 @@
 import { match } from 'ts-pattern'
-import { AnyType } from './type'
 
 export class Result<T, E extends Error> {
   private constructor(
@@ -32,7 +31,7 @@ export class Result<T, E extends Error> {
     }
   }
 
-  when<U, R extends AnyType>(handlers: { ok: (value: T) => U; error: (error: E) => R }): U | R {
+  when<U, R = U>(handlers: { ok: (value: T) => U; error: (error: E) => R }): U | R {
     return match({
       kind: this.ok ? ('ok' as const) : ('err' as const),
       payload: this.ok ? this.value : this.error,
@@ -47,6 +46,10 @@ export class Result<T, E extends Error> {
         handlers.error((payload ?? Result.error(new Error('payload is undefined')).error) as E),
       )
       .exhaustive()
+  }
+
+  map<U>(fn: (value: T) => U): Result<U, Error> {
+    return this.ok ? Result.ok(fn(this.value as T)) : Result.error(this.error as E)
   }
 
   flatMap<U>(fn: (value: T) => Result<U, E>): Result<U, E> {

@@ -16,10 +16,10 @@ describe('Result', () => {
       const numberResult = Result.ok(123)
       expect(
         numberResult.when({
-          ok: (value) => value.toString(),
+          ok: (value) => value,
           error: (e) => e,
         }),
-      ).toEqual('123')
+      ).toEqual(123)
 
       const objectResult = Result.ok({ foo: 'bar' })
       expect(
@@ -78,9 +78,23 @@ describe('Result', () => {
       expect(
         result.when({
           ok: (value) => value,
+          error: () => 'test error',
+        }),
+      ).toEqual('test error')
+    })
+
+    it('チェインできる', () => {
+      const result = Result.wrap(() => 1)
+        .flatMap((v) => Result.wrap(() => v + 1))
+        .flatMap((v) => Result.wrap(() => v + 1))
+        .flatMap((v) => Result.wrap(() => v + 1))
+
+      expect(
+        result.when({
+          ok: (value) => value,
           error: (e) => e,
         }),
-      ).toEqual(new Error('test error'))
+      ).toEqual(4)
     })
   })
 
@@ -97,7 +111,7 @@ describe('Result', () => {
   })
 
   describe('when', () => {
-    it('should apply the correct handler based on the result state', () => {
+    it('結果の状態に応じて、正しいハンドラを適用する', () => {
       const okResult = Result.ok('test')
       const errResult = Result.error(new Error('test error'))
 
@@ -116,17 +130,16 @@ describe('Result', () => {
       ).toEqual(new Error('test error'))
     })
 
-    it('should return the correct type based on the handler', () => {
-      const okResult = Result.ok(123)
-      const transformedResult = okResult.when({
+    it('エラーハンドラは自由な型を返却できる', () => {
+      const errorResult = Result.error(new Error()).when({
         ok: (value) => value * 2,
-        error: (error) => error,
+        error: () => 'error happend!',
       })
 
-      expect(transformedResult).toEqual(246)
+      expect(errorResult).toEqual('error happend!')
     })
 
-    describe('falsyな値を返却できる', () => {
+    describe('okハンドラはfalsyな値を返却できる', () => {
       it('0', () => {
         const transformedResult = Result.ok(0).when({
           ok: (value) => value,
@@ -165,31 +178,107 @@ describe('Result', () => {
     })
   })
 
+  describe('map', () => {
+    it('関数を適用し、元のResultが成功した場合、新しいResultを返す', () => {
+      const result = Result.ok(5)
+        .map((value) => value * 2)
+        .map((value) => value * 2)
+        .map((value) => value * 2)
+
+      expect(
+        result.when({
+          ok: (value) => value,
+          error: (error) => error,
+        }),
+      ).toEqual(40)
+    })
+
+    it('例外をラップしない', () => {
+      const throwfunc = () => {
+        throw new Error('map test error')
+      }
+
+      const throwResult = () =>
+        Result.ok(5)
+          .map((value) => value * 2)
+          .map(() => throwfunc())
+          .map((value) => value * 2)
+
+      expect(throwResult).toThrow('map test error')
+    })
+  })
+
   describe('flatMap', () => {
     it('関数を適用し、元のResultが成功した場合、新しいResultを返す', () => {
       const doubledResult = Result.ok(5).flatMap((value) => Result.ok(value * 2))
 
       expect(
         doubledResult.when({
-          ok: (value) => value.toString(),
+          ok: (value) => value,
           error: (error) => error,
         }),
-      ).toEqual('10')
+      ).toEqual(10)
     })
 
     it('多重にチェインできる', () => {
-      const doubledResult = Result.ok(5)
-        .flatMap((v) => Result.ok(v * 2))
-        .flatMap((v) => Result.ok(v * 2))
-        .flatMap((v) => Result.ok(v * 2))
+      const result = Result.ok(5)
+        .flatMap((value) => Result.ok(value * 2)) // 10
+        .flatMap((value) => Result.ok(value * 2)) // 20
+        .flatMap((value) => Result.ok(value * 2)) // 40
+        .flatMap((value) => Result.ok(value * 2)) // 80
+
+      expect(
+        result.when({
+          ok: (value) => value,
+          error: (error) => error,
+        }),
+      ).toEqual(80)
+    })
+
+    it('多重にチェインできる、途中で構造を変えても型推論される', () => {
+      const result = Result.ok(5)
+      expect(
+        result.when({
+          ok: (value) => value,
+          error: (error) => error,
+        }),
+      ).toEqual(5)
+
+      const result2 = result.flatMap(Result.ok).flatMap(() => Result.ok('ok'))
+
+      expect(
+        result2.when({
+          ok: (value) => value,
+          error: (error) => error,
+        }),
+      ).toEqual('ok')
+
+      const result3 = result2
+        .flatMap(() => Result.ok([1, 2, 3]))
+        .flatMap((r) => Result.ok(r.reduce((acc, cur) => acc + cur, 0)))
+
+      expect(
+        result3.when({
+          ok: (value) => value,
+          error: (error) => error,
+        }),
+      ).toEqual(6)
+    })
+
+    it('途中で例外が発生しても、Resultでラップする', () => {
+      const result = Result.ok(5)
+        .flatMap(Result.ok)
+        .flatMap(Result.ok)
+        .flatMap(() => Result.error(new Error('error!')))
+        .flatMap(Result.ok)
         .flatMap(() => Result.ok(0))
 
       expect(
-        doubledResult.when({
-          ok: (value) => value.toString(),
+        result.when({
+          ok: (value) => value,
           error: (error) => error,
         }),
-      ).toEqual('0')
+      ).toEqual(new Error('error!'))
     })
 
     it('should return the original Result if the original Result is an error', () => {
@@ -199,7 +288,7 @@ describe('Result', () => {
 
       expect(
         doubledResult.when({
-          ok: (value) => value.toString(),
+          ok: (value) => value,
           error: (error) => error,
         }),
       ).toEqual(new Error('original error'))

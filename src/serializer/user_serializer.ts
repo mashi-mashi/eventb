@@ -1,9 +1,9 @@
-import { User as PrismaUser } from '@prisma/client';
-import { match } from 'ts-pattern';
-import { User, UserEvent, UserIdType } from '../model/user/user';
-import { Serializable, WithoutTimestamp } from './serializable';
+import { User as PrismaUser } from '@prisma/client'
+import { match } from 'ts-pattern'
+import { User, UserEvent, UserIdType } from '../model/user/user'
+import { Serializable, WithoutTimestamp } from './serializable'
 
-export type UserSerializerType = Serializable<User, PrismaUser, UserEvent>;
+export type UserSerializerType = Serializable<User, PrismaUser, UserEvent>
 
 export const userSerializer: UserSerializerType = {
   serialize(user) {
@@ -12,7 +12,7 @@ export const userSerializer: UserSerializerType = {
       name: user.name,
       email: user.email,
       kind: user.kind,
-    } as WithoutTimestamp<PrismaUser>;
+    } as WithoutTimestamp<PrismaUser>
   },
   desrialize(json) {
     return match(json)
@@ -21,11 +21,11 @@ export const userSerializer: UserSerializerType = {
           id: json.id as UserIdType,
           name: json.name,
           email: json.email ?? undefined,
-        });
+        })
       })
       .otherwise(() => {
-        throw new Error('Invalid json');
-      });
+        throw new Error('Invalid json')
+      })
   },
   serializeEvents(events: UserEvent[]) {
     return events.map((event) => {
@@ -33,7 +33,7 @@ export const userSerializer: UserSerializerType = {
         entityId: event.entityId,
         type: event.type,
         payload: event,
-      };
-    });
+      }
+    })
   },
-};
+}

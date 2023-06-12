@@ -1,5 +1,5 @@
 export function filteredUndefined<T>(array: (T | undefined)[]): T[] {
-  return array.filter((item): item is T => item !== undefined);
+  return array.filter((item): item is T => item !== undefined)
 }
 
 // export function pipe<A, B>(f: (arg: A) => B): (arg: A) => B;
@@ -10,9 +10,9 @@ export function filteredUndefined<T>(array: (T | undefined)[]): T[] {
 // }
 
 export function pipe<T>(...fns: Array<(t: T) => T>) {
-  return (t: T) => fns.reduce((v, f) => f(v), t);
+  return (t: T) => fns.reduce((v, f) => f(v), t)
 }
 
 export function performOn<T>(value: T, ...fns: Array<(arg: T) => T>): T {
-  return fns.reduce((v, func) => func(v), value);
+  return fns.reduce((v, func) => func(v), value)
 }

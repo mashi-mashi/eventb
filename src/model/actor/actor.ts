@@ -1,7 +1,7 @@
 type ActorType = {
-  id: string;
-};
+  id: string
+}
 
 export type ActorActionType = {
-  performAction: <T>(usecaseFunction: (actor: ActorType) => T) => T;
-};
+  performAction: <T>(usecaseFunction: (actor: ActorType) => T) => T
+}

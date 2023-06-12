@@ -1,37 +1,37 @@
-import { EventType } from '../../core/event';
+import { EventType } from '../../core/event'
 
 type PostCreatedEvent = {
-  type: 'PostCreatedEvent';
+  type: 'PostCreatedEvent'
 
   payload: {
-    title: string;
-    content: string;
-  };
-} & EventType;
+    title: string
+    content: string
+  }
+} & EventType
 
 type PostUpdatedEvent = {
-  type: 'PostUpdatedEvent';
+  type: 'PostUpdatedEvent'
 
   payload: {
-    title?: string;
-    content?: string;
-  };
-} & EventType;
+    title?: string
+    content?: string
+  }
+} & EventType
 
 type PostPublishedEvent = {
-  type: 'PostPublishedEvent';
+  type: 'PostPublishedEvent'
 
   payload: {
-    publishedAt: Date;
-  };
-} & EventType;
+    publishedAt: Date
+  }
+} & EventType
 
 type PostUnPublishedEvent = {
-  type: 'PostUnPublishedEvent';
-} & EventType;
+  type: 'PostUnPublishedEvent'
+} & EventType
 
-type PostEvent = PostCreatedEvent | PostUpdatedEvent | PostPublishedEvent | PostUnPublishedEvent;
+type PostEvent = PostCreatedEvent | PostUpdatedEvent | PostPublishedEvent | PostUnPublishedEvent
 
-type PublishedPostEvent = PostEvent;
+type PublishedPostEvent = PostEvent
 
-export { PostEvent, PublishedPostEvent };
+export { PostEvent, PublishedPostEvent }

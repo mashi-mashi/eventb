@@ -1,13 +1,13 @@
-import { Post as PrismaPost } from '@prisma/client';
-import { match } from 'ts-pattern';
-import { BasePost, PostIdType } from '../model/post/base_post';
-import { Post } from '../model/post/post';
-import { PostEvent } from '../model/post/post_event';
-import { PublishedPost } from '../model/post/published_post';
-import { Serializable, WithoutTimestamp } from './serializable';
-import { UserIdType } from '../model/user/user';
+import { Post as PrismaPost } from '@prisma/client'
+import { match } from 'ts-pattern'
+import { BasePost, PostIdType } from '../model/post/base_post'
+import { Post } from '../model/post/post'
+import { PostEvent } from '../model/post/post_event'
+import { PublishedPost } from '../model/post/published_post'
+import { Serializable, WithoutTimestamp } from './serializable'
+import { UserIdType } from '../model/user/user'
 
-export type PostSerializerType = Serializable<BasePost, PrismaPost, PostEvent>;
+export type PostSerializerType = Serializable<BasePost, PrismaPost, PostEvent>
 
 export const postSerializer: PostSerializerType = {
   serialize(post) {
@@ -18,7 +18,7 @@ export const postSerializer: PostSerializerType = {
       content: post.content,
       publishedAt: post.publishedAt,
       kind: post.kind,
-    } as WithoutTimestamp<PrismaPost>;
+    } as WithoutTimestamp<PrismaPost>
   },
   desrialize(json) {
     return match(json)
@@ -29,7 +29,7 @@ export const postSerializer: PostSerializerType = {
           title: json.title,
           content: json.content,
           publishedAt: json.publishedAt ?? undefined,
-        });
+        })
       })
       .with({ kind: 'PublishedPost' }, (json) => {
         return PublishedPost.of({
@@ -39,11 +39,11 @@ export const postSerializer: PostSerializerType = {
           content: json.content,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           publishedAt: json.publishedAt!,
-        });
+        })
       })
       .otherwise(() => {
-        throw new Error('Invalid json');
-      });
+        throw new Error('Invalid json')
+      })
   },
   serializeEvents(events: PostEvent[]) {
     return events.map((event) => {
@@ -51,7 +51,7 @@ export const postSerializer: PostSerializerType = {
         entityId: event.entityId,
         type: event.type,
         payload: event,
-      };
-    });
+      }
+    })
   },
-};
+}

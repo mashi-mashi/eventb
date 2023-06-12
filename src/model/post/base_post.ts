@@ -1,11 +1,11 @@
-import { EventSourcedEntity } from '../../core/event';
-import { IdType } from '../../lib/generateId';
-import { UserIdType } from '../user/user';
-import { PostEvent } from './post_event';
+import { EventSourcedEntity } from '../../core/event'
+import { IdType } from '../../lib/generateId'
+import { UserIdType } from '../user/user'
+import { PostEvent } from './post_event'
 
-export type PostIdType = IdType<'Post'>;
+export type PostIdType = IdType<'Post'>
 
-type PostKindType = 'Post' | 'PublishedPost';
+type PostKindType = 'Post' | 'PublishedPost'
 
 export abstract class BasePost implements EventSourcedEntity<PostEvent, BasePost> {
   constructor(
@@ -20,13 +20,13 @@ export abstract class BasePost implements EventSourcedEntity<PostEvent, BasePost
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   applyEvent(event: PostEvent): BasePost {
-    throw new Error('Method not implemented.');
+    throw new Error('Method not implemented.')
   }
   clearEvents(): BasePost {
-    throw new Error('Method not implemented.');
+    throw new Error('Method not implemented.')
   }
 
   get lastEvent(): PostEvent | undefined {
-    return this.events.length > 0 ? this.events[this.events.length - 1] : undefined;
+    return this.events.length > 0 ? this.events[this.events.length - 1] : undefined
   }
 }

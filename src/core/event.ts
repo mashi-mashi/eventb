@@ -1,16 +1,16 @@
 type EventType = {
-  entityId: string;
-  type: string;
-};
+  entityId: string
+  type: string
+}
 
 type EventSourcedEntity<E extends EventType, T> = {
-  readonly kind: string;
-  readonly events: E[];
-  readonly lastEvent: E | undefined;
+  readonly kind: string
+  readonly events: E[]
+  readonly lastEvent: E | undefined
 
-  applyEvent(event: E): T;
+  applyEvent(event: E): T
 
-  clearEvents(): T;
-};
+  clearEvents(): T
+}
 
-export { EventType, EventSourcedEntity };
+export { EventType, EventSourcedEntity }

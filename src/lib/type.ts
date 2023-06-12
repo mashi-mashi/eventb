@@ -1,8 +1,8 @@
 export type NestedPartial<T> = {
-  [K in keyof T]?: T[K] extends object ? NestedPartial<T[K]> : T[K];
-};
+  [K in keyof T]?: T[K] extends object ? NestedPartial<T[K]> : T[K]
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AnyType = any;
+export type AnyType = any
 
-export type Brand<K, T> = K & { __brand: T };
+export type Brand<K, T> = K & { __brand: T }

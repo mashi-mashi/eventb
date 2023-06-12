@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client';
-import { BasePost, PostIdType } from '../model/post/base_post';
-import { PostSerializerType } from '../serializer/post_serializer';
+import { PrismaClient } from '@prisma/client'
+import { BasePost, PostIdType } from '../model/post/base_post'
+import { PostSerializerType } from '../serializer/post_serializer'
 
 // type DataBaseType = {
 //   store: <T>(any: JsonType<T>) => Promise<void>;
@@ -29,17 +29,20 @@ import { PostSerializerType } from '../serializer/post_serializer';
 // };
 
 export type PostRepositoryType = {
-  store: (post: Partial<BasePost>) => Promise<BasePost>;
-  get: (id: PostIdType) => Promise<BasePost>;
-};
+  store: (post: Partial<BasePost>) => Promise<BasePost>
+  get: (id: PostIdType) => Promise<BasePost>
+}
 
 export class PostRepositoryOnPrisma implements PostRepositoryType {
-  constructor(private readonly prisma: PrismaClient, private readonly serializer: PostSerializerType) {}
+  constructor(
+    private readonly prisma: PrismaClient,
+    private readonly serializer: PostSerializerType,
+  ) {}
 
   async get(id: PostIdType) {
-    const post = await this.prisma.post.findUnique({ where: { id } });
-    if (!post) throw new Error(`Post not found! ${id}`);
-    return this.serializer.desrialize(post);
+    const post = await this.prisma.post.findUnique({ where: { id } })
+    if (!post) throw new Error(`Post not found! ${id}`)
+    return this.serializer.desrialize(post)
   }
 
   async store(post: Partial<BasePost>) {
@@ -54,8 +57,8 @@ export class PostRepositoryOnPrisma implements PostRepositoryType {
         data: this.serializer.serializeEvents(post.events ?? []),
         skipDuplicates: true,
       }),
-    ]);
+    ])
 
-    return this.serializer.desrialize(updated);
+    return this.serializer.desrialize(updated)
   }
 }

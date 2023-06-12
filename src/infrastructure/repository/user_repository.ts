@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { User, UserIdType } from '../model/user/user'
+import { User, UserIdType } from '../../model/user/user'
 import { UserSerializerType } from '../serializer/user_serializer'
 
 export type UserRepositoryType = {

@@ -1,11 +1,11 @@
 import { match } from 'ts-pattern'
 import { Result } from '../../core/result'
-import { performOn } from '../../lib/util'
 import { BasePost } from '../../model/post/base_post'
 import { Post } from '../../model/post/post'
 import { PublishedPost } from '../../model/post/published_post'
-import { PostRepositoryType } from '../../repository/post_repository'
+import { PostRepositoryType } from '../../infrastructure/repository/post_repository'
 import { ContextType, UseCaseType } from './use_case'
+import { performOn } from '../../core/util'
 
 export class CreatePostUseCase
   implements UseCaseType<{ title: string; content: string }, BasePost>

@@ -2,7 +2,7 @@ import { match } from 'ts-pattern'
 import { BasePost, PostIdType } from './base_post'
 import { PostEvent } from './post_event'
 import { PublishedPost } from './published_post'
-import { generateId } from '../../lib/generateId'
+import { generateId } from '../../core/generateId'
 import { NestedPartial } from '../../lib/type'
 import { UserIdType } from '../user/user'
 

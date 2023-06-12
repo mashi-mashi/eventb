@@ -1,4 +1,4 @@
-import { NestedPartial } from '../../lib/type'
+import { NestedPartial } from '../../core/type'
 import { UserIdType } from '../user/user'
 import { BasePost, PostIdType } from './base_post'
 import { Post } from './post'

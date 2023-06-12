@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { BasePost, PostIdType } from '../model/post/base_post'
+import { BasePost, PostIdType } from '../../model/post/base_post'
 import { PostSerializerType } from '../serializer/post_serializer'
 
 // type DataBaseType = {

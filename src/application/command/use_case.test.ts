@@ -1,9 +1,9 @@
 import { container } from '../../container'
 import { Result } from '../../core/result'
-import { AnyType } from '../../lib/type'
 import { User, UserIdType } from '../../model/user/user'
-import { UserRepositoryOnPrisma } from '../../repository/user_repository'
+import { UserRepositoryOnPrisma } from '../../infrastructure/repository/user_repository'
 import { withAuthor } from './use_case'
+import { AnyType } from '../../core/type'
 
 jest.mock('../../repository/user_repository', () => {
   return {

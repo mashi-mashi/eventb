@@ -1,5 +1,5 @@
-import { EventSourcedEntity, EventType } from '../core/event'
-import { AnyType } from '../lib/type'
+import { EventSourcedEntity, EventType } from '../../core/event'
+import { AnyType } from '../../core/type'
 
 type SerializedEventType = {
   type: string

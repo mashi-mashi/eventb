@@ -1,6 +1,6 @@
 import { match } from 'ts-pattern'
 import { EventSourcedEntity, EventType } from '../../core/event'
-import { IdType, generateId } from '../../lib/generateId'
+import { IdType, generateId } from '../../core/generateId'
 import { NestedPartial } from '../../lib/type'
 import { ActorActionType } from '../actor/actor'
 

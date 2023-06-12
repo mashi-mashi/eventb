@@ -1,12 +1,12 @@
 import { PrismaClient } from '@prisma/client'
 import { CreatePostUseCase } from './application/command/create_post_use_case'
 import { PostQuery } from './application/query/post_query'
-import { AnyType } from './lib/type'
-import { performOn } from './lib/util'
-import { PostRepositoryOnPrisma } from './repository/post_repository'
-import { postSerializer } from './serializer/post_serializer'
-import { UserRepositoryOnPrisma } from './repository/user_repository'
-import { userSerializer } from './serializer/user_serializer'
+import { AnyType } from './core/type'
+import { performOn } from './core/util'
+import { PostRepositoryOnPrisma } from './infrastructure/repository/post_repository'
+import { UserRepositoryOnPrisma } from './infrastructure/repository/user_repository'
+import { postSerializer } from './infrastructure/serializer/post_serializer'
+import { userSerializer } from './infrastructure/serializer/user_serializer'
 
 type Token<T extends new (...args: AnyType[]) => AnyType> = T
 

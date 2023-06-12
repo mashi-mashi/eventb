@@ -1,9 +1,9 @@
-type EventType = {
+export type EventType = {
   entityId: string
   type: string
 }
 
-type EventSourcedEntity<E extends EventType, T> = {
+export type EventSourcedEntity<E extends EventType, T> = {
   readonly kind: string
   readonly events: E[]
   readonly lastEvent: E | undefined
@@ -12,5 +12,3 @@ type EventSourcedEntity<E extends EventType, T> = {
 
   clearEvents(): T
 }
-
-export { EventType, EventSourcedEntity }

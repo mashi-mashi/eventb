@@ -12,7 +12,7 @@ type Token<T extends new (...args: AnyType[]) => AnyType> = T
 
 export class Container {
   private static instance: Container
-  private services = new Map<Token<AnyType>, AnyType>()
+  public services = new Map<Token<AnyType>, AnyType>()
 
   static getInstance(): Container {
     if (!Container.instance) {
@@ -37,6 +37,10 @@ export class Container {
       throw new Error(`Token ${token} is not registered`)
     }
     return this.services.get(token) as InstanceType<T>
+  }
+
+  reset(): void {
+    this.services.clear()
   }
 }
 

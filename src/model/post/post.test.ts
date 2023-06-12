@@ -1,4 +1,4 @@
-import { UserIdType } from '../user/base_user'
+import { UserIdType } from '../user/user'
 import { Post } from './post'
 import { PublishedPost } from './published_post'
 

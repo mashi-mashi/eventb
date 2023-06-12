@@ -53,7 +53,7 @@ describe('CreatePostUseCase', () => {
           ok: (value) => {
             return { value, message: 'ok' }
           },
-          err: (error) => ({ message: error.message }),
+          error: (error) => error,
         }).message,
       ).toBe('User is not logged in.')
     })
@@ -70,7 +70,7 @@ describe('CreatePostUseCase', () => {
           ok: (value) => {
             return { value, message: 'ok' }
           },
-          err: (error) => ({ message: error.message }),
+          error: (error) => error,
         }).message,
       ).toBe('ok')
     })
@@ -87,7 +87,7 @@ describe('CreatePostUseCase', () => {
           ok: (value) => {
             return { value, message: 'ok' }
           },
-          err: (error) => ({ message: error.message }),
+          error: (error) => error,
         }).message,
       ).toBe('Repository error')
     })

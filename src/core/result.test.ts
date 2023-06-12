@@ -7,9 +7,9 @@ describe('Result', () => {
       expect(
         result.when({
           ok: (value) => value,
-          err: (error) => error.message,
+          error: (e) => e,
         }),
-      ).toBe('test')
+      ).toEqual('test')
     })
 
     it('should handle different types of values', () => {
@@ -17,17 +17,17 @@ describe('Result', () => {
       expect(
         numberResult.when({
           ok: (value) => value.toString(),
-          err: (error) => error.message,
+          error: (e) => e,
         }),
-      ).toBe('123')
+      ).toEqual('123')
 
       const objectResult = Result.ok({ foo: 'bar' })
       expect(
         objectResult.when({
           ok: (value) => value.foo,
-          err: (error) => error.message,
+          error: (e) => e,
         }),
-      ).toBe('bar')
+      ).toEqual('bar')
     })
   })
 
@@ -38,9 +38,9 @@ describe('Result', () => {
       expect(
         result.when({
           ok: (value) => value,
-          err: (error) => error.message,
+          error: (e) => e,
         }),
-      ).toBe('test error')
+      ).toEqual(error)
     })
 
     it('should handle different types of errors', () => {
@@ -54,9 +54,45 @@ describe('Result', () => {
       expect(
         customErrResult.when({
           ok: (value) => value,
-          err: (error) => error.message,
+          error: (e) => e,
         }),
-      ).toBe('This is a custom error')
+      ).toEqual(new CustomError())
+    })
+  })
+
+  describe('wrap', () => {
+    it('関数が成功した場合、Result.okを返す', () => {
+      const result = Result.wrap(() => 'test')
+      expect(
+        result.when({
+          ok: (value) => value,
+          error: (e) => e,
+        }),
+      ).toEqual('test')
+    })
+
+    it('関数が失敗した場合、Result.errを返す', () => {
+      const result = Result.wrap(() => {
+        throw new Error('test error')
+      })
+      expect(
+        result.when({
+          ok: (value) => value,
+          error: (e) => e,
+        }),
+      ).toEqual(new Error('test error'))
+    })
+  })
+
+  describe('asyncWrap', () => {
+    it('関数が成功した場合、Result.okを返す', async () => {
+      const result = await Result.asyncWrap(async () => 'async test')
+      expect(
+        result.when({
+          ok: (value) => value,
+          error: (e) => e,
+        }),
+      ).toEqual('async test')
     })
   })
 
@@ -68,40 +104,92 @@ describe('Result', () => {
       expect(
         okResult.when({
           ok: (value) => `ok: ${value}`,
-          err: (error) => `error: ${error.message}`,
+          error: (e) => e,
         }),
-      ).toBe('ok: test')
+      ).toEqual('ok: test')
 
       expect(
         errResult.when({
           ok: (value) => `ok: ${value}`,
-          err: (error) => `error: ${error.message}`,
+          error: (e) => e,
         }),
-      ).toBe('error: test error')
+      ).toEqual(new Error('test error'))
     })
 
     it('should return the correct type based on the handler', () => {
       const okResult = Result.ok(123)
       const transformedResult = okResult.when({
         ok: (value) => value * 2,
-        err: (error) => error.message.length,
+        error: (error) => error,
       })
 
-      expect(transformedResult).toBe(246)
+      expect(transformedResult).toEqual(246)
+    })
+
+    describe('falsyな値を返却できる', () => {
+      it('0', () => {
+        const transformedResult = Result.ok(0).when({
+          ok: (value) => value,
+          error: (e) => e,
+        })
+
+        expect(transformedResult).toEqual(0)
+      })
+
+      it('false', () => {
+        const transformedResult = Result.ok(false).when({
+          ok: (value) => value,
+          error: (e) => e,
+        })
+
+        expect(transformedResult).toEqual(false)
+      })
+
+      it('null', () => {
+        const transformedResult = Result.ok(null).when({
+          ok: (value) => value,
+          error: (e) => e,
+        })
+
+        expect(transformedResult).toEqual(null)
+      })
+    })
+
+    it('返却する値が undefined の場合はエラー', () => {
+      const transformedResult = Result.ok(undefined).when({
+        ok: (value) => value,
+        error: (error) => error,
+      })
+
+      expect(transformedResult).toEqual(new Error('payload is undefined'))
     })
   })
 
   describe('flatMap', () => {
-    it('should apply the function and return a new Result if the original Result is successful', () => {
-      const result = Result.ok(5)
-      const doubledResult = result.flatMap((value) => Result.ok(value * 2))
+    it('関数を適用し、元のResultが成功した場合、新しいResultを返す', () => {
+      const doubledResult = Result.ok(5).flatMap((value) => Result.ok(value * 2))
 
       expect(
         doubledResult.when({
           ok: (value) => value.toString(),
-          err: (error) => error.message,
+          error: (error) => error,
         }),
-      ).toBe('10')
+      ).toEqual('10')
+    })
+
+    it('多重にチェインできる', () => {
+      const doubledResult = Result.ok(5)
+        .flatMap((v) => Result.ok(v * 2))
+        .flatMap((v) => Result.ok(v * 2))
+        .flatMap((v) => Result.ok(v * 2))
+        .flatMap(() => Result.ok(0))
+
+      expect(
+        doubledResult.when({
+          ok: (value) => value.toString(),
+          error: (error) => error,
+        }),
+      ).toEqual('0')
     })
 
     it('should return the original Result if the original Result is an error', () => {
@@ -112,9 +200,9 @@ describe('Result', () => {
       expect(
         doubledResult.when({
           ok: (value) => value.toString(),
-          err: (error) => error.message,
+          error: (error) => error,
         }),
-      ).toBe('original error')
+      ).toEqual(new Error('original error'))
     })
 
     it('should handle a function that returns a Result.error', () => {
@@ -124,9 +212,9 @@ describe('Result', () => {
       expect(
         errorResult.when({
           ok: (value) => value,
-          err: (error) => error.message,
+          error: (error) => error,
         }),
-      ).toBe('new error')
+      ).toEqual(new Error('new error'))
     })
   })
 })

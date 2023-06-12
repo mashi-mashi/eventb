@@ -67,7 +67,7 @@ server.get(
           value: v,
         })
       },
-      err: (e) => {
+      error: (e) => {
         server.log.error(e)
         return reply.status(500).send({ ok: false, error: { message: e.message } })
       },

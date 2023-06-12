@@ -1,11 +1,11 @@
 import { container } from '../../container'
 import { Result } from '../../core/result'
-import { User, UserIdType } from '../../model/user/user'
-import { UserRepositoryOnPrisma } from '../../infrastructure/repository/user_repository'
-import { withAuthor } from './use_case'
 import { AnyType } from '../../core/type'
+import { UserRepositoryOnPrisma } from '../../infrastructure/repository/user_repository'
+import { User, UserIdType } from '../../model/user/user'
+import { withAuthor } from './use_case'
 
-jest.mock('../../repository/user_repository', () => {
+jest.mock('../../infrastructure/repository/user_repository', () => {
   return {
     UserRepositoryOnPrisma: jest.fn().mockImplementation(() => {
       return {
@@ -36,7 +36,9 @@ describe('UseCase', () => {
       const result = await withAuthor(usecase)({
         input: {},
       })
-      expect(result.when({ ok: () => 'ok', err: () => 'err' })).toBe('err')
+      expect(result.when({ ok: () => 'ok', error: (e) => e })).toEqual(
+        new Error('authorId is undefined'),
+      )
     })
 
     it('authorIdが存在するなら、usecase.executeを実行する', async () => {
@@ -48,7 +50,7 @@ describe('UseCase', () => {
         authorId: 'test' as UserIdType,
         input: {},
       })
-      expect(result.when({ ok: () => 'ok', err: () => 'err' })).toBe('ok')
+      expect(result.when({ ok: () => 'ok', error: (e) => e })).toEqual('ok')
     })
   })
 })

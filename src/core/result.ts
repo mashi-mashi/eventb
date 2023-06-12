@@ -1,4 +1,5 @@
 import { match } from 'ts-pattern'
+import { AnyType } from './type'
 
 export class Result<T, E extends Error> {
   private constructor(
@@ -31,19 +32,19 @@ export class Result<T, E extends Error> {
     }
   }
 
-  when<U>(handlers: { ok: (value: T) => U; err: (error: E) => U }): U {
+  when<U, R extends AnyType>(handlers: { ok: (value: T) => U; error: (error: E) => R }): U | R {
     return match({
       kind: this.ok ? ('ok' as const) : ('err' as const),
       payload: this.ok ? this.value : this.error,
     })
       .with({ kind: 'ok' }, ({ payload }) =>
         // TODO: undefined はありえないはずなので、うまくパターンマッチしたい
-        payload
+        payload !== undefined
           ? handlers.ok(payload as T)
-          : handlers.err(Result.error(new Error('payload is undefined.')).error as E),
+          : handlers.error(Result.error(new Error('payload is undefined')).error as E),
       )
       .with({ kind: 'err' }, ({ payload }) =>
-        handlers.err((payload ?? Result.error(new Error('payload is undefined.')).error) as E),
+        handlers.error((payload ?? Result.error(new Error('payload is undefined')).error) as E),
       )
       .exhaustive()
   }

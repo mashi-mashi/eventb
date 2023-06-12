@@ -3,8 +3,8 @@ import { BasePost, PostIdType } from './base_post'
 import { PostEvent } from './post_event'
 import { PublishedPost } from './published_post'
 import { generateId } from '../../core/generateId'
-import { NestedPartial } from '../../lib/type'
 import { UserIdType } from '../user/user'
+import { NestedPartial } from '../../core/type'
 
 export class Post extends BasePost {
   public readonly id: PostIdType

@@ -27,8 +27,17 @@ export class CreatePostUseCase
           Post.create({ authorId: user.id, title: input.title, content: input.content }),
           (p0) =>
             match(p0)
-              .with({ kind: 'Post' }, (p) => p.publish(new Date()))
-              .with({ kind: 'PublishedPost' }, (p) => p)
+              .with(
+                {
+                  kind: 'Post',
+                },
+                (p) => {
+                  return p.publish(new Date())
+                },
+              )
+              .with({ kind: 'PublishedPost' }, (p) => {
+                return p
+              })
               .exhaustive(),
         )
       })

@@ -5,7 +5,6 @@ import { container } from './container'
 import { UserIdType } from './model/user/user'
 
 const withAuhorCreatePost = withAuthor(container.resolve(CreatePostUseCase))
-
 const server: FastifyInstance = Fastify({ logger: true })
 
 server.get(

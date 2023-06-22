@@ -41,3 +41,16 @@ model Event {
   payload   Json
   timestamp DateTime @default(now())
 }
+
+model BiTemporalArticle {
+  biTemporalId String @id @default(dbgenerated("gen_random_uuid()"))
+  id           String
+  title        String
+  content      String
+
+  validFrom DateTime @default(now())
+  validTo   DateTime
+
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+}

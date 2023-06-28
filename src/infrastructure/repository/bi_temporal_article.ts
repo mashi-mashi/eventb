@@ -1,9 +1,17 @@
 import { BiTemporalArticle, PrismaClient } from '@prisma/client'
+import dayjs from 'dayjs'
+
+type BiTemporalType<
+  T extends {
+    validFrom: Date
+    validTo: Date
+  },
+> = Omit<T, 'biTemporalId' | 'createdAt' | 'deletedAt'>
 
 export class BiTemporalArticleRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async store(article: Omit<BiTemporalArticle, 'biTemporalId' | 'createdAt' | 'deletedAt'>) {
+  async store(article: BiTemporalType<BiTemporalArticle>) {
     await this.prisma.$transaction(async (tx) => {
       const latest = await tx.biTemporalArticle.findFirst({
         where: {
@@ -18,7 +26,7 @@ export class BiTemporalArticleRepository {
         await tx.biTemporalArticle.update({
           where: { biTemporalId: latest.biTemporalId },
           data: {
-            validTo: article.validFrom, // 1ms前にする
+            validTo: dayjs(article.validFrom).subtract(1, 'millisecond').toDate(), // 1ms前にする
             deletedAt: new Date(),
           },
         })

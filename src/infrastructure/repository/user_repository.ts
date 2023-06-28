@@ -2,12 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { User, UserIdType } from '../../model/user/user'
 import { UserSerializerType } from '../serializer/user_serializer'
 
-export type UserRepositoryType = {
-  store: (post: Partial<User>) => Promise<User>
-  get: (id: UserIdType) => Promise<User>
-}
-
-export class UserRepositoryOnPrisma implements UserRepositoryType {
+export class UserRepositoryOnPrisma {
   constructor(
     private readonly prisma: PrismaClient,
     private readonly serializer: UserSerializerType,

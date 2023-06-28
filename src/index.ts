@@ -1,10 +1,13 @@
 import Fastify, { FastifyInstance } from 'fastify'
 import { CreatePostUseCase } from './application/command/create_post_use_case'
 import { withAuthor } from './application/command/use_case'
-import { container } from './container'
+import { Container } from './container'
 import { UserIdType } from './model/user/user'
+import { init } from './init'
 
-const withAuhorCreatePost = withAuthor(container.resolve(CreatePostUseCase))
+init()
+
+const withAuhorCreatePost = withAuthor(Container.getInstance().resolve(CreatePostUseCase))
 const server: FastifyInstance = Fastify({ logger: true })
 
 server.get(

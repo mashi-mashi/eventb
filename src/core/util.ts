@@ -14,5 +14,5 @@ export function pipe<T>(...fns: Array<(t: T) => T>) {
 }
 
 export function performOn<T>(value: T, ...fns: Array<(arg: T) => T>): T {
-  return fns.reduce((v, func) => func(v), value)
+  return fns.reduce((v, f) => f(v), value)
 }

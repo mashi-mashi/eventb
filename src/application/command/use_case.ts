@@ -1,7 +1,7 @@
-import { container } from '../../container'
+import { Container } from '../../container'
 import { Result } from '../../core/result'
-import { User, UserIdType } from '../../model/user/user'
 import { UserRepositoryOnPrisma } from '../../infrastructure/repository/user_repository'
+import { User, UserIdType } from '../../model/user/user'
 
 export type ContextType = {
   user?: User
@@ -16,7 +16,9 @@ export const withAuthor = <Input, Output>(usecase: UseCaseType<Input, Output>) =
     return Result.asyncWrap(async () => {
       if (req.authorId === undefined) throw new Error('authorId is undefined')
 
-      const author = await container.resolve(UserRepositoryOnPrisma).get(req.authorId as UserIdType)
+      const author = await Container.getInstance()
+        .resolve(UserRepositoryOnPrisma)
+        .get(req.authorId as UserIdType)
       if (!author) throw new Error('author is not found')
 
       const context = {

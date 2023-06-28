@@ -3,5 +3,5 @@ type ActorType = {
 }
 
 export type ActorActionType = {
-  performAction: <T>(usecaseFunction: (actor: ActorType) => T) => T
+  performAction: <T>(f: (actor: ActorType) => T) => T
 }

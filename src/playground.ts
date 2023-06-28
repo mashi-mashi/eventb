@@ -1,15 +1,11 @@
-import { PrismaClient } from '@prisma/client'
-import { Result } from './core/result'
-import { BiTemporalArticleRepository } from './infrastructure/repository/bi_temporal_article'
+// import { Container } from './container'
 
-async function runInSeries(asyncFuncs: (() => Promise<void>)[]): Promise<void> {
-  return asyncFuncs.reduce(async (prevPromise, func) => {
-    await prevPromise
-    return func()
-  }, Promise.resolve())
-}
+import { Container } from './container'
+import { Logger } from './core/logger'
+import { init } from './init'
 
 const main = async () => {
+  init()
   // const asyncFuncs = [
   //   () => {
   //     return new Promise((resolve) => {
@@ -42,18 +38,23 @@ const main = async () => {
 
   // await Promise.all(asyncFuncs.map((func) => func()))
 
-  const repo = new BiTemporalArticleRepository(new PrismaClient())
-  const validFrom = new Date()
-  validFrom.setDate(validFrom.getDate() + 10)
-  const validTo = new Date()
-  validTo.setDate(validTo.getDate() + 100)
-  await repo.store({
-    id: 'id',
-    title: 'title2',
-    content: 'content2',
-    validFrom: validFrom,
-    validTo: validTo,
-  })
+  // const repo = new BiTemporalArticleRepository(new PrismaClient())
+  // const validFrom = new Date()
+  // validFrom.setDate(validFrom.getDate() + 10)
+  // const validTo = new Date()
+  // validTo.setDate(validTo.getDate() + 100)
+  // await repo.store({
+  //   id: 'id',
+  //   title: 'title2',
+  //   content: 'content2',
+  //   validFrom: validFrom,
+  //   validTo: validTo,
+  // })
+
+  const logger = Container.getInstance().resolve(Logger)
+
+  logger.info('message', { a: 'a' })
+  logger.warn('message', { a: 'a' })
 }
 
 main()

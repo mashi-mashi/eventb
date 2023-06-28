@@ -1,4 +1,4 @@
-import { container } from '../../container'
+import { Container } from '../../container'
 import { Result } from '../../core/result'
 import { AnyType } from '../../core/type'
 import { UserRepositoryOnPrisma } from '../../infrastructure/repository/user_repository'
@@ -18,13 +18,13 @@ jest.mock('../../infrastructure/repository/user_repository', () => {
 
 describe('UseCase', () => {
   beforeEach(() => {
-    container.reset()
-    container.register(UserRepositoryOnPrisma, {} as AnyType, {} as AnyType)
+    Container.getInstance().reset()
+    Container.getInstance().register(UserRepositoryOnPrisma, {} as AnyType, {} as AnyType)
   })
 
   // テストが終わるたびに実行
   afterEach(() => {
-    container.reset()
+    Container.getInstance().reset()
   })
 
   describe('withAuthor', () => {
